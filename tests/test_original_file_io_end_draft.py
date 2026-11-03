@@ -8,10 +8,10 @@ from pathlib import Path
 import pytest
 from test_managed_file_io_draft import (native, bound, deliver, actual_helpers, unknown,
                                       private_descriptor_cleanup)
-from feishu_bridge import fleet_managed_file_io as file_io
-from feishu_bridge import fleet_managed_persistence as persistence
-from feishu_bridge import fleet_managed_ingress as ingress
-from feishu_bridge import fleet_target_control as control
+from feishu_bridge.managed import fleet_managed_file_io as file_io
+from feishu_bridge.managed import fleet_managed_persistence as persistence
+from feishu_bridge.managed import fleet_managed_ingress as ingress
+from feishu_bridge.sessions import fleet_target_control as control
 
 
 @pytest.fixture(autouse=True)
@@ -190,5 +190,5 @@ def test_unissued_observation_cannot_construct_or_select_original_end():
 
 
 def test_end_is_exact_changed_draft_module_not_parent_fixture_module():
-    assert Path(file_io.__file__).resolve() == Path(__file__).parents[1] / 'src/feishu_bridge/fleet_managed_file_io.py'
+    assert Path(file_io.__file__).resolve() == Path(__file__).parents[1] / 'src/feishu_bridge/managed/fleet_managed_file_io.py'
     assert file_io.Files._finish.__code__.co_argcount == 4

@@ -6,14 +6,14 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from feishu_bridge import task_card
+from feishu_bridge.bridge import task_card
 
 # ⚠ 桥启动时读 argv[1] 当 home —— 照本仓既有测试的写法给它一个临时目录,
 # 否则 import 就 NotADirectoryError。
 _argv = sys.argv
 sys.argv = [_argv[0], tempfile.mkdtemp(prefix="bridge-taskrace-home-")]
 try:
-    from feishu_bridge import fleet_bridge
+    from feishu_bridge.bridge import fleet_bridge
 finally:
     sys.argv = _argv
 

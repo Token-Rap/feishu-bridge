@@ -9,7 +9,7 @@ import hashlib
 import os
 import stat
 
-from feishu_bridge import fleet_managed_ingress as ingress
+from feishu_bridge.managed import fleet_managed_ingress as ingress
 
 _ORIGINALS = {}
 _ISSUED = {}  # One original Session per consumed helper, never reconstructed.
@@ -97,7 +97,7 @@ def _same_fields(left, right):
 
 
 def _end_binding(session):
-    from feishu_bridge.fleet_managed_persistence import _original_refusal
+    from feishu_bridge.managed.fleet_managed_persistence import _original_refusal
     end = _END_ORIGINALS.get(id(session))
     need(type(end) is EndOriginal and end.session is session
          and type(session) is Files and session._original() is end.original
@@ -298,7 +298,7 @@ class Files:
     def _finish(self, raw, readback, identity):
         need(id(self) not in _END_ATTEMPTS)
         _END_ATTEMPTS[id(self)] = 'UNKNOWN'  # BEFORE final guard/sync/close.
-        from feishu_bridge.fleet_managed_persistence import _original_refusal
+        from feishu_bridge.managed.fleet_managed_persistence import _original_refusal
         original = self._guard()
         authority = _original_refusal(original.observation)
         pins = tuple((k, p) for k, p in _READERS.items() if p.session is self)
@@ -387,7 +387,7 @@ class Files:
 
 
 def capture(observed):
-    from feishu_bridge.fleet_managed_persistence import Observation, Original as HelperOriginal
+    from feishu_bridge.managed.fleet_managed_persistence import Observation, Original as HelperOriginal
     need(type(observed) is Observation and type(observed.original) is HelperOriginal)
     prior = _ISSUED.get(id(observed))
     if prior is not None:

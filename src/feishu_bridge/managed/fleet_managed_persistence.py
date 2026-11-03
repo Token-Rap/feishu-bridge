@@ -12,10 +12,10 @@ from pathlib import Path
 import stat
 import uuid
 
-from feishu_bridge import fleet_managed_child as child
-from feishu_bridge import fleet_managed_ingress as ingress
-from feishu_bridge import fleet_managed_runtime as runtime
-from feishu_bridge import fleet_target_control as coordinator
+from feishu_bridge.managed import fleet_managed_child as child
+from feishu_bridge.managed import fleet_managed_ingress as ingress
+from feishu_bridge.managed import fleet_managed_runtime as runtime
+from feishu_bridge.sessions import fleet_target_control as coordinator
 
 _REFUSAL_ORIGINALS = {}  # Strong private originals; public pointers cannot select a DB.
 _REFUSAL_GRANTS = {}
@@ -154,7 +154,7 @@ def hold_native_original(native):
     for o in originals:
         o.observation.unknown = True
         try:
-            from feishu_bridge.fleet_managed_file_io import refuse_observation
+            from feishu_bridge.managed.fleet_managed_file_io import refuse_observation
             refuse_observation(o.observation)
         except BaseException:
             pass
@@ -199,7 +199,7 @@ def hold_entry_original(entry):
     originals = tuple(o for o in _REFUSAL_ORIGINALS.values()
                       if o.helper.entry is entry)
     if not originals:
-        from feishu_bridge.fleet_managed_diagnostic import entry_needs_fixed_refusal
+        from feishu_bridge.managed.fleet_managed_diagnostic import entry_needs_fixed_refusal
         return entry_needs_fixed_refusal(entry)
     for o in originals:
         hold_native_original(o.helper.native)
@@ -275,7 +275,7 @@ class Observation:
     def previous_sessions(self):
         self._live()
         require(self.original.kind == 'status')
-        from feishu_bridge.fleet_managed_file_io import capture
+        from feishu_bridge.managed.fleet_managed_file_io import capture
         raw = capture(self).previous()
         if raw is None:
             return {}
@@ -317,7 +317,7 @@ class Observation:
     def refuse(self):
         self.unknown = True  # BEFORE potentially fallible coordinator diagnostic.
         try:
-            from feishu_bridge.fleet_managed_file_io import refuse_observation
+            from feishu_bridge.managed.fleet_managed_file_io import refuse_observation
             refuse_observation(self)
         except BaseException:
             pass  # Retain actual original registry/tails; never substitute a target.
@@ -331,7 +331,7 @@ class Observation:
         try:
             self._live()
             require(not self.body_returned)
-            from feishu_bridge.fleet_managed_file_io import observed_io
+            from feishu_bridge.managed.fleet_managed_file_io import observed_io
             observed_io(self)
             self.body_returned = True
         except BaseException:
@@ -341,11 +341,11 @@ class Observation:
         # leases pending: no file/parent/native settlement follows.
 
     def write_status(self, text):
-        from feishu_bridge.fleet_managed_file_io import capture
+        from feishu_bridge.managed.fleet_managed_file_io import capture
         return capture(self).status(text)
 
     def append_ledger(self, text):
-        from feishu_bridge.fleet_managed_file_io import capture
+        from feishu_bridge.managed.fleet_managed_file_io import capture
         return capture(self).ledger(text)
 
 

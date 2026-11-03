@@ -16,8 +16,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 _argv = sys.argv
 sys.argv = [_argv[0], tempfile.mkdtemp(prefix="bridge-test-home-")]
-from feishu_bridge import fleet_bridge as b  # noqa: E402
-from feishu_bridge import app_frontend  # noqa: E402
+from feishu_bridge.bridge import fleet_bridge as b  # noqa: E402
+from feishu_bridge.bridge import app_frontend  # noqa: E402
 sys.argv = _argv
 
 _OK_DIR = Path(tempfile.mkdtemp(prefix="filemark-", dir="/tmp"))
@@ -124,7 +124,7 @@ def test_feishu_transport_does_not_upload_a_file_as_an_image():
 # ── bot 得知道有这个标记 ────────────────────────────────────────────
 def test_bridge_note_tells_bots_about_the_file_marker():
     """**不写进系统提示, 没有一个 bot 会用它。**"""
-    src = (Path(__file__).resolve().parents[1] / "src/feishu_bridge/fleet_bridge.py").read_text(encoding="utf-8")
+    src = (Path(__file__).resolve().parents[1] / "src/feishu_bridge/bridge/fleet_bridge.py").read_text(encoding="utf-8")
     note = src[src.index("桥接能力:"):src.index("桥接能力:") + 1200]
     assert "[[文件:" in note, "系统提示里的桥接能力没提 [[文件:]] —— bot 不会知道能发文件"
 

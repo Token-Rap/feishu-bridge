@@ -2,7 +2,7 @@
 import re
 from pathlib import Path
 
-_SRC = (Path(__file__).resolve().parents[1] / "src/feishu_bridge/fleet_bridge.py").read_text(encoding="utf-8")
+_SRC = (Path(__file__).resolve().parents[1] / "src/feishu_bridge/bridge/fleet_bridge.py").read_text(encoding="utf-8")
 
 
 def test_ask_sent_log_states_the_target():

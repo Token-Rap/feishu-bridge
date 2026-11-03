@@ -28,11 +28,11 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 _argv = sys.argv
 sys.argv = [_argv[0], tempfile.mkdtemp(prefix="bridge-test-home-")]
 try:
-    from feishu_bridge import fleet_bridge as b
+    from feishu_bridge.bridge import fleet_bridge as b
 finally:
     sys.argv = _argv
 
-_SRC = (Path(__file__).resolve().parents[1] / "src/feishu_bridge/fleet_bridge.py").read_text(encoding="utf-8")
+_SRC = (Path(__file__).resolve().parents[1] / "src/feishu_bridge/bridge/fleet_bridge.py").read_text(encoding="utf-8")
 _CODE = "\n".join(l.split("#")[0] for l in _SRC.split("\n"))
 
 

@@ -6,7 +6,7 @@ from collections import OrderedDict
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from feishu_bridge.fleet_quote import (  # noqa: E402
+from feishu_bridge.bridge.fleet_quote import (  # noqa: E402
     load_sent_cache,
     pick_quote_ref,
     remember_sent,
@@ -115,7 +115,7 @@ def test_save_failure_is_silent(tmp_path):
 
 
 def test_load_notify_entry(tmp_path):
-    from feishu_bridge.fleet_quote import load_notify_entry
+    from feishu_bridge.bridge.fleet_quote import load_notify_entry
     p = tmp_path / "notify_card_cache.json"
     assert load_notify_entry(p, "om_x") is None            # 文件不存在
     p.write_text('{"om_x": "**待办**\\n内容"}', encoding="utf-8")

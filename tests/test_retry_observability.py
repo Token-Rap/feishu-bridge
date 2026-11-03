@@ -9,7 +9,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 _argv = sys.argv
 sys.argv = [_argv[0], tempfile.mkdtemp(prefix="retry-obs-test-")]
 try:
-    from feishu_bridge.fleet_bridge import _retry_summary, _retry_user_note  # noqa: E402
+    from feishu_bridge.bridge.fleet_bridge import _retry_summary, _retry_user_note  # noqa: E402
 finally:
     sys.argv = _argv
 
@@ -88,7 +88,7 @@ def test_retry_verdict_is_not_read_off_the_prose():
     those error strings all day. Reading a verdict off prose is how a fix for a
     silent failure becomes a new silent failure.
     """
-    src = (Path(__file__).resolve().parent.parent / "src/feishu_bridge/fleet_bridge.py").read_text(encoding="utf-8")
+    src = (Path(__file__).resolve().parent.parent / "src/feishu_bridge/bridge/fleet_bridge.py").read_text(encoding="utf-8")
     i = src.index("_r_bad = (")
     verdict = src[i:src.index("\n", src.index("looks_like_api_error(r_result.result)", i))]
     assert "r_result" in verdict, verdict
@@ -99,7 +99,7 @@ def test_retry_verdict_is_not_read_off_the_prose():
 def test_missing_result_message_is_not_success():
     """No ResultMessage = no evidence the turn finished. Absence of evidence must not
     be scored as success -- that is the same shape as the bug being fixed."""
-    src = (Path(__file__).resolve().parent.parent / "src/feishu_bridge/fleet_bridge.py").read_text(encoding="utf-8")
+    src = (Path(__file__).resolve().parent.parent / "src/feishu_bridge/bridge/fleet_bridge.py").read_text(encoding="utf-8")
     assert "r_result is None or r_result.is_error" in src, \
         "a retry with no ResultMessage would be reported as 成功 again"
 

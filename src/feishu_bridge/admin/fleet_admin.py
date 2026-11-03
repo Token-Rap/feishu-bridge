@@ -14,12 +14,12 @@
   API 成本」, 仅作消耗强度代理, 不是真实扣费。
 
 用法:
-    python3 -m feishu_bridge.fleet_admin usage [--days 7]
-    python3 -m feishu_bridge.fleet_admin context
-    python3 -m feishu_bridge.fleet_admin list
-    python3 -m feishu_bridge.fleet_admin config
-    python3 -m feishu_bridge.fleet_admin set-model <bot|all> <model|default>
-    python3 -m feishu_bridge.fleet_admin set-effort <bot|all> <low|medium|high|xhigh|max|default>
+    python3 -m feishu_bridge.admin.fleet_admin usage [--days 7]
+    python3 -m feishu_bridge.admin.fleet_admin context
+    python3 -m feishu_bridge.admin.fleet_admin list
+    python3 -m feishu_bridge.admin.fleet_admin config
+    python3 -m feishu_bridge.admin.fleet_admin set-model <bot|all> <model|default>
+    python3 -m feishu_bridge.admin.fleet_admin set-effort <bot|all> <low|medium|high|xhigh|max|default>
 """
 from __future__ import annotations
 
@@ -36,7 +36,7 @@ import time
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-from feishu_bridge.fleet_env import env_any, fleet_registry_path   # 新名优先, 回落旧名 (改名迁移)
+from feishu_bridge.bridge.fleet_env import env_any, fleet_registry_path   # 新名优先, 回落旧名 (改名迁移)
 
 DEFAULT_FLEET = fleet_registry_path()   # 只此一份, 见 fleet_env
 PROJECTS_DIR = Path(os.getenv("CLAUDE_PROJECTS_DIR")

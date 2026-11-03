@@ -4,9 +4,9 @@ import json
 
 import pytest
 
-from feishu_bridge import fleet_managed_ingress as ingress
-from feishu_bridge import fleet_managed_output as output
-from feishu_bridge import fleet_target_control as control
+from feishu_bridge.managed import fleet_managed_ingress as ingress
+from feishu_bridge.managed import fleet_managed_output as output
+from feishu_bridge.sessions import fleet_target_control as control
 from test_managed_entry_source import bound, deliver
 
 

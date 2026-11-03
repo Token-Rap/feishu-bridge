@@ -9,8 +9,8 @@ DRAFT = Path(__file__).resolve().parents[1]
 PARENT = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(DRAFT), str(PARENT / 'tests'), str(PARENT)]
 
-from feishu_bridge import fleet_managed_persistence
-from feishu_bridge import codex_approvals
+from feishu_bridge.managed import fleet_managed_persistence
+from feishu_bridge.codex import codex_approvals
 from test_managed_entry_source import bound, deliver
 from test_managed_child_source import native
 from test_managed_server_request_draft import actual_turn, require_bound_refusal

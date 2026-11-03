@@ -11,7 +11,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 _argv = sys.argv
 sys.argv = [_argv[0], tempfile.mkdtemp(prefix="bridge-test-home-")]
 try:
-    from feishu_bridge import fleet_bridge as b
+    from feishu_bridge.bridge import fleet_bridge as b
 finally:
     sys.argv = _argv
 
@@ -61,7 +61,7 @@ def test_foreign_card_ignored():
 
 def test_timeout_denies_with_no_reask_instruction():
     """超时必须 deny 且明说别再问 — 放行会让模型原样重问, 用户看到连发两张卡。"""
-    src = (Path(__file__).resolve().parent.parent / "src/feishu_bridge/fleet_bridge.py").read_text("utf-8")
+    src = (Path(__file__).resolve().parent.parent / "src/feishu_bridge/bridge/fleet_bridge.py").read_text("utf-8")
     # 锚到提问钩子那段 (文件里还有一处审批超时, 别抓错)
     seg = src.split("提问 10 分钟未回答", 1)[1].split("finally:", 1)[0]
     assert '"permissionDecision": "deny"' in seg and "不要重复提问" in seg

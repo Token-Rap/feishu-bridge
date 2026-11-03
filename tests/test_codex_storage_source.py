@@ -13,7 +13,7 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from feishu_bridge import fleet_codex_storage as storage
+from feishu_bridge.codex import fleet_codex_storage as storage
 
 
 def make_home(root):
@@ -50,7 +50,7 @@ def compile_defs(source,names,ns):
 
 
 def bridge_defs(names,ns):
-    return compile_defs((ROOT/'src/feishu_bridge/fleet_bridge.py').read_text(),names,ns)
+    return compile_defs((ROOT/'src/feishu_bridge/bridge/fleet_bridge.py').read_text(),names,ns)
 
 
 def test_source_never_changes_parent_or_reads_auth_body(selected,monkeypatch):
@@ -191,7 +191,7 @@ def test_actual_compact_and_discovery_use_same_home(selected,monkeypatch,method)
 
 
 def test_actual_call_sites_have_env_and_thread_namespace_and_unchanged_probe_rules():
-    src=(ROOT/'src/feishu_bridge/fleet_bridge.py').read_text();tree=ast.parse(src)
+    src=(ROOT/'src/feishu_bridge/bridge/fleet_bridge.py').read_text();tree=ast.parse(src)
     funcs={n.name:n for n in tree.body if isinstance(n,(ast.FunctionDef,ast.AsyncFunctionDef))}
     for name in ['_run_turn_codex','_codex_compact_thread','_rollover_codex_tool_config','_rollover_write_note_codex']:
         launches=[n for n in ast.walk(funcs[name]) if isinstance(n,ast.Call) and isinstance(n.func,ast.Attribute) and n.func.attr=='create_subprocess_exec']
@@ -222,8 +222,8 @@ def test_windows_acl_unknown_never_silently_accepts(selected,monkeypatch,refusal
 def ordinary_namespace(monkeypatch,h):
     """Reuse the existing actual-definition harness without importing SDK/app."""
     import contextvars,contextlib,time,re
-    from feishu_bridge import codex_questions as q
-    from feishu_bridge import codex_approvals
+    from feishu_bridge.questions import codex_questions as q
+    from feishu_bridge.codex import codex_approvals
     harness_globals=dict(ast=ast,asyncio=asyncio,contextvars=contextvars,contextlib=contextlib,
         hashlib=hashlib,json=json,os=os,time=time,re=re,Path=Path,SimpleNamespace=SimpleNamespace,
         q=q,codex_approvals=codex_approvals,app_frontend=SimpleNamespace(),ROOT=ROOT)
@@ -277,7 +277,7 @@ def test_actual_ordinary_start_resume_and_pre_model_refusals(selected,monkeypatc
 
 def test_removed_terminal_mode_is_not_reintroduced():
     assert not (ROOT / 'fleet_pty.py').exists()
-    tree = ast.parse((ROOT / 'src/feishu_bridge/fleet_bridge.py').read_text())
+    tree = ast.parse((ROOT / 'src/feishu_bridge/bridge/fleet_bridge.py').read_text())
     assert not any(isinstance(node, ast.Import) and
                    any(alias.name == 'fleet_pty' for alias in node.names)
                    for node in tree.body)
@@ -288,7 +288,7 @@ def test_per_session_namespace_not_inferred_from_id_or_file(selected,tmp_path):
     p.write_text(json.dumps({'work::codex':{'active':'thread','sessions':{'thread':{'name':'held original'}}}}))
     before=p.read_bytes()
     with pytest.raises(storage.StorageRefused):storage.session_mapping(p,'work::codex','thread',s)
-    from feishu_bridge import fleet_sessions
+    from feishu_bridge.sessions import fleet_sessions
     old=fleet_sessions.SESSIONS_FILE;fleet_sessions.SESSIONS_FILE=p
     try:
         with pytest.raises(storage.StorageRefused):storage.record_session(fleet_sessions,'work::codex','thread',s,'unchanged')
@@ -299,7 +299,7 @@ def test_per_session_namespace_not_inferred_from_id_or_file(selected,tmp_path):
 def test_new_session_namespace_record_preserves_ids_history_other_work(selected,tmp_path):
     h,cfg,s=selected;p=tmp_path/'map.json'
     data={'other':{'active':'other-id','sessions':{'other-id':{'name':'held','ts':'original'}}},'work::codex':{'active':None,'sessions':{'old':{'name':'personal historical','ts':'original'}}}}
-    p.write_text(json.dumps(data));from feishu_bridge import fleet_sessions
+    p.write_text(json.dumps(data));from feishu_bridge.sessions import fleet_sessions
     old=fleet_sessions.SESSIONS_FILE;fleet_sessions.SESSIONS_FILE=p
     try:storage.record_session(fleet_sessions,'work::codex','new-native-id',s,'complete question')
     finally:fleet_sessions.SESSIONS_FILE=old
@@ -486,7 +486,7 @@ def test_archived_desktop_sid_has_no_namespace_or_context_fallback(selected,tmp_
 
 
 def test_config_cleanup_has_nominal_wait_and_unbounded_final_reap():
-    tree=ast.parse((ROOT/'src/feishu_bridge/fleet_codex_storage.py').read_text())
+    tree=ast.parse((ROOT/'src/feishu_bridge/codex/fleet_codex_storage.py').read_text())
     node=next(n for n in tree.body if isinstance(n,ast.AsyncFunctionDef) and n.name=='terminal_preflight')
     waits=[n for n in ast.walk(node) if isinstance(n,ast.Call) and isinstance(n.func,ast.Attribute) and n.func.attr=='wait_for']
     assert sorted(n.args[1].value for n in waits)==[5,10,10]

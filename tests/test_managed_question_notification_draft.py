@@ -9,8 +9,8 @@ DRAFT = Path(__file__).resolve().parents[1]
 PARENT = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(DRAFT), str(PARENT / 'tests'), str(PARENT)]
 
-from feishu_bridge import fleet_managed_persistence  # Keep draft dependency pinned before old fixture path insertion.
-from feishu_bridge import codex_questions
+from feishu_bridge.managed import fleet_managed_persistence  # Keep draft dependency pinned before old fixture path insertion.
+from feishu_bridge.questions import codex_questions
 from test_managed_entry_source import bound, deliver
 from test_managed_child_source import native
 from test_managed_server_request_draft import actual_turn, require_bound_refusal

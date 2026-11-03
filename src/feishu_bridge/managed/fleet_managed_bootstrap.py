@@ -6,7 +6,7 @@ future trusted loader hook needs its own exact SOURCE and attestation review.
 """
 from pathlib import Path
 
-from feishu_bridge.fleet_managed_ingress import Refused, Selection
+from feishu_bridge.managed.fleet_managed_ingress import Refused, Selection
 
 
 def require_startup_binding(environ, argv):

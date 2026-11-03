@@ -7,14 +7,14 @@ import sys
 import tempfile
 from pathlib import Path
 
-BRIDGE = str(Path(__file__).resolve().parent.parent / "src/feishu_bridge/fleet_bridge.py")
+BRIDGE = str(Path(__file__).resolve().parent.parent / "src/feishu_bridge/bridge/fleet_bridge.py")
 VENV = sys.executable
 
 _PROBE = """
 import sys, json
 sys.argv = ['x', %r]
 sys.path.insert(0, %r)
-from feishu_bridge import fleet_bridge as b
+from feishu_bridge.bridge import fleet_bridge as b
 print(json.dumps({"chats": list(b._TASK_TRACK), "v": b._TASK_TRACK_V}))
 """
 

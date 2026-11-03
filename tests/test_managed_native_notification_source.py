@@ -6,10 +6,10 @@ from pathlib import Path
 
 import pytest
 
-from feishu_bridge import fleet_managed_child as child
-from feishu_bridge import fleet_managed_ingress as ingress
-from feishu_bridge import fleet_managed_codex as managed_codex
-from feishu_bridge import fleet_target_control as control
+from feishu_bridge.managed import fleet_managed_child as child
+from feishu_bridge.managed import fleet_managed_ingress as ingress
+from feishu_bridge.managed import fleet_managed_codex as managed_codex
+from feishu_bridge.sessions import fleet_target_control as control
 from test_managed_entry_source import bound, deliver
 from test_managed_child_source import native, Process, fake_spawn
 from test_managed_native_write_source import source_namespace, Sink
@@ -23,7 +23,7 @@ FOREIGN = 'SYNTHETIC_OTHER_THREAD_CONTENT'
 def turn_fixture(b, monkeypatch, notifications):
     ns, events, logs, _ = source_namespace(monkeypatch, b)
     # Bind actual existing display helpers, rather than inherited empty stubs.
-    tree = ast.parse((Path(__file__).parents[1] / 'src/feishu_bridge/fleet_bridge.py').read_text())
+    tree = ast.parse((Path(__file__).parents[1] / 'src/feishu_bridge/bridge/fleet_bridge.py').read_text())
     helpers = {'_codex_text_value', '_codex_reasoning_text', '_codex_tool_brief', '_codex_error_event',
                '_codex_usage_from', '_CodexTurnUsage'}
     nodes = [n for n in tree.body if isinstance(n, (ast.FunctionDef, ast.ClassDef)) and n.name in helpers]

@@ -8,7 +8,7 @@ from pathlib import Path
 import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from feishu_bridge.fleet_env import env, env_set_with  # noqa: E402
+from feishu_bridge.bridge.fleet_env import env, env_set_with  # noqa: E402
 
 _S = "PYTEST_DUAL_X"
 
@@ -67,7 +67,7 @@ def test_module_imports_with_only_the_new_names():
     e = {k: v for k, v in os.environ.items() if not k.startswith("FEISHU_BRIDGE_")}
     e["FLEET_BRIDGE_CLAUDE_DIR"] = tempfile.mkdtemp()
     e["FLEET_BRIDGE_HOME"] = tempfile.mkdtemp()
-    r = subprocess.run([sys.executable, "-c", "from feishu_bridge import fleet_bridge"],
+    r = subprocess.run([sys.executable, "-c", "from feishu_bridge.bridge import fleet_bridge"],
                        cwd=root, env=e, capture_output=True, text=True)
     assert r.returncode == 0, f"只设新名时导入失败:\n{r.stderr[-800:]}"
 
@@ -86,7 +86,7 @@ def test_no_raw_old_reads_left_in_source():
              r'environ\[\s*["\']FEISHU_BRIDGE_',
              r'environ\.get\(\s*["\']FEISHU_BRIDGE_')
     for name in ("fleet_bridge.py", "app_frontend.py", "fleet_app_provision.py"):
-        src = root.joinpath("src/feishu_bridge", name).read_text(encoding="utf-8")
+        src = root.joinpath("src/feishu_bridge", "admin" if name == "fleet_app_provision.py" else "bridge", name).read_text(encoding="utf-8")
         for pat in reads:
             hit = re.search(pat, src)
             assert not hit, f"{name} 还有裸读旧名: {src[hit.start():hit.start()+60]!r}"
@@ -106,7 +106,7 @@ def test_no_raw_old_reads_left_in_source():
 
 def test_provision_writes_new_names():
     """配应用时写回 .env 的那处 —— 它在 bridge 仓, 会跟着 rollout 铺。"""
-    src = (Path(__file__).resolve().parent.parent / "src/feishu_bridge/fleet_app_provision.py"
+    src = (Path(__file__).resolve().parent.parent / "src/feishu_bridge/admin/fleet_app_provision.py"
            ).read_text(encoding="utf-8")
     assert '"FLEET_BRIDGE_APP_ID"' in src and '"FLEET_BRIDGE_APP_SECRET"' in src
     assert '"FEISHU_BRIDGE_' not in src, "写入端还有旧名"
@@ -136,7 +136,7 @@ def test_dual_read_still_accepts_what_provision_writes(monkeypatch):
 
 
 def test_env_any_tries_names_in_order(monkeypatch):
-    from feishu_bridge.fleet_env import env_any  # noqa: PLC0415
+    from feishu_bridge.bridge.fleet_env import env_any  # noqa: PLC0415
     monkeypatch.setenv("PYTEST_OLD_N", "old")
     assert env_any("PYTEST_NEW_N", "PYTEST_OLD_N") == "old"
     monkeypatch.setenv("PYTEST_NEW_N", "new")
@@ -156,18 +156,18 @@ def test_watchdog_reads_both_names():
              if k not in ("FLEET_HEARTBEAT_STALE_S", "FEISHU_HEARTBEAT_STALE_S")}
         e[var] = val
         r = subprocess.run([sys.executable, "-c",
-                            "from feishu_bridge import fleet_watchdog as w; print(w.STALE_S)"],
+                            "from feishu_bridge.watchdog import fleet_watchdog as w; print(w.STALE_S)"],
                            cwd=root, env=e, capture_output=True, text=True)
         assert r.stdout.strip() == val, (var, r.stdout, r.stderr[-300:])
 
 
 def test_registry_path_changed_both_prefix_and_suffix():
     """Behavioral regression coverage."""
-    src = (Path(__file__).resolve().parent.parent / "src/feishu_bridge/fleet_env.py"
+    src = (Path(__file__).resolve().parent.parent / "src/feishu_bridge/bridge/fleet_env.py"
            ).read_text(encoding="utf-8")
     assert 'env_any("FLEET_REGISTRY_JSON", "FEISHU_FLEET_JSON")' in src
     # 顺带钉住"只有一处": 收口的意义就在这儿
     for f in ("fleet_watchdog.py", "fleet_admin.py"):
-        other = (Path(__file__).resolve().parent.parent / "src/feishu_bridge" / f).read_text(encoding="utf-8")
+        other = (Path(__file__).resolve().parent.parent / "src/feishu_bridge" / ("watchdog" if f == "fleet_watchdog.py" else "admin") / f).read_text(encoding="utf-8")
         assert 'env_any("FLEET_REGISTRY_JSON"' not in other, (
             f"{f} 又自己算了一遍 fleet.json 路径 —— 走 fleet_env.fleet_registry_path()")

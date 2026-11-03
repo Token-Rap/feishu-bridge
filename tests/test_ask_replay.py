@@ -7,7 +7,7 @@ import tempfile
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from feishu_bridge.app_frontend import AppFrontend  # noqa: E402
+from feishu_bridge.bridge.app_frontend import AppFrontend  # noqa: E402
 
 # ⚠ fleet_bridge 必须在**模块级**导, 且临时换掉 argv: 在函数里 `import fleet_bridge` 时
 # argv 是 pytest 的, 家目录解析会跑偏 (`tests/test_x.py/media`)。
@@ -16,7 +16,7 @@ from feishu_bridge.app_frontend import AppFrontend  # noqa: E402
 _argv_bak = sys.argv
 sys.argv = [_argv_bak[0], tempfile.mkdtemp(prefix="bridge-ask-")]
 try:
-    from feishu_bridge import fleet_bridge as FB  # noqa: E402
+    from feishu_bridge.bridge import fleet_bridge as FB  # noqa: E402
 finally:
     sys.argv = _argv_bak
 

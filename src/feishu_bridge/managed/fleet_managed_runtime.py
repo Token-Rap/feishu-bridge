@@ -13,8 +13,8 @@ from dataclasses import dataclass, field
 import json
 import uuid
 
-from feishu_bridge import fleet_managed_ingress as ingress
-from feishu_bridge import fleet_target_control as control
+from feishu_bridge.managed import fleet_managed_ingress as ingress
+from feishu_bridge.sessions import fleet_target_control as control
 
 
 @dataclass(frozen=True, repr=False)
@@ -46,7 +46,7 @@ class _MapWriteGuard:
         self.runtime.control.verify_grant(self.db, self.child, {"session_map"})
         if self.child.work_scope != self.action.scope.values():
             raise ingress.Refused("managed_map_scope_unknown")
-        from feishu_bridge import fleet_managed_map
+        from feishu_bridge.managed import fleet_managed_map
         before = fleet_managed_map.read(path)
         key = self.action.scope.work_chat
         # The immutable WORK scope is the reviewed canonical map key here.
@@ -142,11 +142,11 @@ class Runtime:
         No admit/claim/replay is performed here. The exact request may still be
         retained when drain wins before its dispatch task runs.
         """
-        from feishu_bridge.fleet_managed_output import refuse_runtime_delivery
+        from feishu_bridge.managed.fleet_managed_output import refuse_runtime_delivery
         refuse_runtime_delivery(self)
-        from feishu_bridge.fleet_managed_persistence import refuse_pending_delivery
+        from feishu_bridge.managed.fleet_managed_persistence import refuse_pending_delivery
         refuse_pending_delivery(self)
-        from feishu_bridge.fleet_managed_diagnostic import refuse_runtime_delivery
+        from feishu_bridge.managed.fleet_managed_diagnostic import refuse_runtime_delivery
         refuse_runtime_delivery(self)
         if type(request) is not ingress.Request or type(scope) is not control.WorkScope:
             raise ingress.Refused("managed_scope_unknown")
@@ -170,11 +170,11 @@ class Runtime:
     def hold_unknown(self):
         # A failed diagnostic/transition cannot become a claimed successful hold.
         # The original unresolved parent/child leases already remain committed.
-        from feishu_bridge.fleet_managed_persistence import hold_runtime_original
+        from feishu_bridge.managed.fleet_managed_persistence import hold_runtime_original
         original = hold_runtime_original(self)
         if original is not None:
             return original  # No mutable-control fallback for an enrolled tail.
-        from feishu_bridge.fleet_managed_diagnostic import hold_runtime
+        from feishu_bridge.managed.fleet_managed_diagnostic import hold_runtime
         dispatch = hold_runtime(self)
         if dispatch is not None:
             return dispatch
@@ -190,7 +190,7 @@ class Runtime:
         action = CURRENT.get()
         if type(action) is not Action or action.runtime is not self:
             raise ingress.Refused("managed_writer_unknown")
-        from feishu_bridge.fleet_managed_diagnostic import validate_action
+        from feishu_bridge.managed.fleet_managed_diagnostic import validate_action
         validate_action(self, action)
         self.control.validate_writer(action.parent, action.scope)
         return action
@@ -198,7 +198,7 @@ class Runtime:
     @contextlib.contextmanager
     def map_transaction(self):
         action = self.action()
-        from feishu_bridge import fleet_sessions
+        from feishu_bridge.sessions import fleet_sessions
         path = self.selection.target_home / "sessions.json"
         if fleet_sessions.SESSIONS_FILE != path or path != path.resolve():
             raise ingress.Refused("managed_map_home_unknown")
@@ -230,9 +230,9 @@ class Runtime:
         The coordinator independently refuses settlement with any child lease.
         """
         async with self._dispatch_lock:
-            from feishu_bridge.fleet_managed_output import refuse_runtime_delivery
+            from feishu_bridge.managed.fleet_managed_output import refuse_runtime_delivery
             refuse_runtime_delivery(self)
-            from feishu_bridge.fleet_managed_diagnostic import (control_fields, refuse_runtime_delivery,
+            from feishu_bridge.managed.fleet_managed_diagnostic import (control_fields, refuse_runtime_delivery,
                 remember_dispatch, settled_dispatch)
             refuse_runtime_delivery(self)
             original_control = self.control

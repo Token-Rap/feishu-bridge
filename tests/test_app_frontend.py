@@ -24,9 +24,9 @@ _TMP_HOME = tempfile.mkdtemp(prefix="bridge-test-home-")
 _argv = sys.argv
 sys.argv = [_argv[0], _TMP_HOME]
 try:
-    from feishu_bridge import fleet_bridge as b  # noqa: E402
-    from feishu_bridge import transport as t  # noqa: E402
-    from feishu_bridge.app_frontend import AppFrontend, TeeTransport, _TeeStream  # noqa: E402
+    from feishu_bridge.bridge import fleet_bridge as b  # noqa: E402
+    from feishu_bridge.bridge import transport as t  # noqa: E402
+    from feishu_bridge.bridge.app_frontend import AppFrontend, TeeTransport, _TeeStream  # noqa: E402
 finally:
     sys.argv = _argv
 
@@ -160,7 +160,7 @@ def test_socket_roundtrip():
 
 
 def test_tool_brief_extracts_readable_summary():
-    from feishu_bridge.app_frontend import tool_brief
+    from feishu_bridge.bridge.app_frontend import tool_brief
     assert tool_brief("Read", {"file_path": "/a/b/c/main.py"}) == "main.py"
     assert tool_brief("Bash", {"command": "ls -la\n  | head"}) == "ls -la | head"
     assert tool_brief("Task", {"description": "扫描日志", "prompt": "x" * 999}) == "扫描日志"
@@ -170,8 +170,8 @@ def test_tool_brief_extracts_readable_summary():
 
 def test_offline_events_buffered_and_replayed(tmp_path):
     """Behavioral regression coverage."""
-    from feishu_bridge import fleet_bridge as _b  # noqa: F401  (确保模块可导入)
-    from feishu_bridge.app_frontend import AppFrontend
+    from feishu_bridge.bridge import fleet_bridge as _b  # noqa: F401  (确保模块可导入)
+    from feishu_bridge.bridge.app_frontend import AppFrontend
 
     f = AppFrontend(tmp_path, lambda *_: None)
     f._loop = None                      # 模拟"网关没连上"

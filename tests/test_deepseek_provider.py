@@ -13,10 +13,10 @@ import pytest
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
-from feishu_bridge import fleet_providers as P  # noqa: E402
-from feishu_bridge.app_frontend import AppFrontend  # noqa: E402
+from feishu_bridge.bridge import fleet_providers as P  # noqa: E402
+from feishu_bridge.bridge.app_frontend import AppFrontend  # noqa: E402
 
-SRC = (ROOT / "src/feishu_bridge/fleet_bridge.py").read_text(encoding="utf-8")
+SRC = (ROOT / "src/feishu_bridge/bridge/fleet_bridge.py").read_text(encoding="utf-8")
 
 
 @pytest.fixture(autouse=True)

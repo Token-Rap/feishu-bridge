@@ -13,7 +13,7 @@ _argv = sys.argv
 # 避免将 pytest 参数误当成 home 目录。
 sys.argv = [_argv[0], tempfile.mkdtemp(prefix="bridge-test-home-")]
 try:
-    from feishu_bridge import fleet_bridge as b
+    from feishu_bridge.bridge import fleet_bridge as b
 finally:
     sys.argv = _argv
 

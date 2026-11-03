@@ -8,7 +8,7 @@ import tempfile
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from feishu_bridge.app_frontend import AppFrontend  # noqa: E402
+from feishu_bridge.bridge.app_frontend import AppFrontend  # noqa: E402
 
 _D = {"model": "claude-opus-5", "effort": "high"}
 
@@ -124,12 +124,12 @@ def test_stale_observed_gpt_does_not_override_claude_default_engine():
 
 
 def test_bridge_does_not_advertise_codex_when_disabled(monkeypatch):
-    from feishu_bridge import app_frontend
+    from feishu_bridge.bridge import app_frontend
     monkeypatch.setattr(app_frontend, "CODEX_CAPABLE", False)
     assert "codex" not in _front().caps("claude")
 
 
 def test_bridge_advertises_codex_when_enabled(monkeypatch):
-    from feishu_bridge import app_frontend
+    from feishu_bridge.bridge import app_frontend
     monkeypatch.setattr(app_frontend, "CODEX_CAPABLE", True)
     assert "codex" in _front().caps("claude")

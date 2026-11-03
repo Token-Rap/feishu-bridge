@@ -19,7 +19,7 @@ sys.path.insert(0, str(_REPO))
 _argv = sys.argv
 sys.argv = [_argv[0], tempfile.mkdtemp(prefix="bridge-busy-")]
 try:
-    from feishu_bridge import fleet_bridge as b
+    from feishu_bridge.bridge import fleet_bridge as b
 finally:
     sys.argv = _argv
 

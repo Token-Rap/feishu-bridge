@@ -9,7 +9,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 _argv = sys.argv
 sys.argv = [_argv[0], tempfile.mkdtemp(prefix="bridge-test-home-")]
 try:
-    from feishu_bridge import fleet_bridge as b
+    from feishu_bridge.bridge import fleet_bridge as b
 finally:
     sys.argv = _argv
 
@@ -62,7 +62,7 @@ def test_the_flag_is_actually_wired_into_the_reply_path():
 
 
 def test_start_notice_can_carry_a_kind():
-    from feishu_bridge import app_frontend
+    from feishu_bridge.bridge import app_frontend
 
     class _Null:
         def __init__(self): self.got = []
@@ -81,7 +81,7 @@ def test_start_notice_can_carry_a_kind():
 
 
 def test_ordinary_notice_has_no_kind():
-    from feishu_bridge import app_frontend
+    from feishu_bridge.bridge import app_frontend
 
     class _Null:
         def send(self, chat, text): pass

@@ -14,8 +14,8 @@ _argv = sys.argv
 _HOME = tempfile.mkdtemp(prefix="bridge-media-trace-")
 sys.argv = [_argv[0], _HOME]
 try:
-    from feishu_bridge import fleet_bridge as b
-    from feishu_bridge.app_frontend import AppFrontend, TeeTransport
+    from feishu_bridge.bridge import fleet_bridge as b
+    from feishu_bridge.bridge.app_frontend import AppFrontend, TeeTransport
 finally:
     sys.argv = _argv
 

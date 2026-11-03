@@ -18,7 +18,7 @@ set -uo pipefail
 # 默认运行已安装的包。FEISHU_BRIDGE_CODE 可指定兼容的 Python 入口文件；
 # 想换 venv 设 FEISHU_BRIDGE_VENV.
 VENV="${FEISHU_BRIDGE_VENV:-$HOME/.fleet-claude-bridge/venv/bin/python}"
-ENTRY="${FEISHU_BRIDGE_CODE:-feishu_bridge.fleet_bridge}"
+ENTRY="${FEISHU_BRIDGE_CODE:-feishu_bridge.bridge.fleet_bridge}"
 if [ -n "${FEISHU_BRIDGE_CODE:-}" ]; then
   launch_args=("$ENTRY")
 else

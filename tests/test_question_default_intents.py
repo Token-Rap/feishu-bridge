@@ -2,9 +2,9 @@
 import ast,asyncio,copy,json,os,time
 from pathlib import Path
 import pytest
-from feishu_bridge import codex_questions as q
-from feishu_bridge import question_defaults_intents as intents
-from feishu_bridge import question_defaults_producer as producer
+from feishu_bridge.questions import codex_questions as q
+from feishu_bridge.questions import question_defaults_intents as intents
+from feishu_bridge.questions import question_defaults_producer as producer
 import test_codex_questions as old
 
 
@@ -13,7 +13,7 @@ def setup(monkeypatch,tmp_path,count=1):
     ns.update(question_defaults_intents=intents,question_defaults_producer=producer,
               _BRIDGE_HOME=tmp_path,_QUESTION_DEFAULT_OWNER=object(),
               _QUESTION_DEFAULT_PRODUCER=None,_QUESTION_DEFAULT_INTENTS=None)
-    source=ast.parse((Path(__file__).parents[1]/'src/feishu_bridge/fleet_bridge.py').read_text())
+    source=ast.parse((Path(__file__).parents[1]/'src/feishu_bridge/bridge/fleet_bridge.py').read_text())
     fn=next(n for n in source.body if isinstance(n,ast.FunctionDef) and n.name=='_question_defaults_bootstrap')
     exec(compile(ast.Module([fn],type_ignores=[]),'ACTUAL_SOURCE_BOOTSTRAP','exec'),ns)
     ns['_question_defaults_bootstrap']()
@@ -127,7 +127,7 @@ def test_unknown_bot_bootstrap_allocates_no_owner_or_inbox(monkeypatch,tmp_path)
 
 
 def test_exact_production_loop_calls_owner_observer_before_security_handlers():
-    src=(Path(__file__).parents[1]/'src/feishu_bridge/fleet_bridge.py').read_text();tree=ast.parse(src)
+    src=(Path(__file__).parents[1]/'src/feishu_bridge/bridge/fleet_bridge.py').read_text();tree=ast.parse(src)
     fn=next(n for n in tree.body if isinstance(n,ast.AsyncFunctionDef) and n.name=='_run_turn_codex')
     calls=[n for n in ast.walk(fn) if isinstance(n,ast.Call)]
     observe=next(n for n in calls if isinstance(n.func,ast.Name) and n.func.id=='_observe_question_event')

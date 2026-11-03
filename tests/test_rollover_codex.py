@@ -6,7 +6,7 @@ import time
 
 import pytest
 from codex_storage_fixture import storage_fixture, header, original_protocol
-from feishu_bridge import fleet_codex_storage as storage
+from feishu_bridge.codex import fleet_codex_storage as storage
 
 @pytest.fixture(autouse=True)
 def storage_admission(storage_fixture):

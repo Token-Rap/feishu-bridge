@@ -4,7 +4,7 @@ from __future__ import annotations
 import ast
 from pathlib import Path
 
-_SRC_FILE = Path(__file__).resolve().parent.parent / "src/feishu_bridge/fleet_bridge.py"
+_SRC_FILE = Path(__file__).resolve().parent.parent / "src/feishu_bridge/bridge/fleet_bridge.py"
 _TREE = ast.parse(_SRC_FILE.read_text(encoding="utf-8"))
 
 
@@ -78,7 +78,7 @@ def test_unreadable_claude_md_degrades_instead_of_crashing(tmp_path):
          # (我第一版就是这么写的, 测试自己炸在这儿)
          "import sys; home, repo = sys.argv[1], sys.argv[2];"
          "sys.argv = ['x', home]; sys.path.insert(0, repo);"
-         "from feishu_bridge import fleet_bridge as b;"
+         "from feishu_bridge.bridge import fleet_bridge as b;"
          "print('OK', repr(b._CLAUDE_MD))",
          str(home), str(_SRC_FILE.parent)],
         capture_output=True, text=True, timeout=120,

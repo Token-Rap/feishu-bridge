@@ -11,7 +11,7 @@ from pathlib import Path
 import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from feishu_bridge.fleet_risk import classify_risk  # noqa: E402
+from feishu_bridge.bridge.fleet_risk import classify_risk  # noqa: E402
 
 REPO = "/home/example/dev/sample-project"
 

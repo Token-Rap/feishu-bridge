@@ -1,7 +1,7 @@
 """Behavioral regression coverage."""
 import asyncio
 
-from feishu_bridge import fleet_bridge as fb
+from feishu_bridge.bridge import fleet_bridge as fb
 
 
 def _stub(monkeypatch):

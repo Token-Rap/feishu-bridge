@@ -4,8 +4,8 @@ from pathlib import Path
 
 import pytest
 
-from feishu_bridge import fleet_managed_map as managed
-from feishu_bridge import fleet_sessions as sessions
+from feishu_bridge.managed import fleet_managed_map as managed
+from feishu_bridge.sessions import fleet_sessions as sessions
 
 
 @pytest.fixture

@@ -11,7 +11,7 @@ from pathlib import Path
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
-from feishu_bridge.fleet_env import env as _env   # 新名 FLEET_BRIDGE_* 优先, 回落旧名
+from feishu_bridge.bridge.fleet_env import env as _env   # 新名 FLEET_BRIDGE_* 优先, 回落旧名
 
 # 飞书/Lark 官方账号域名 — 注册 device-code 流走这里
 _ACCOUNTS = {

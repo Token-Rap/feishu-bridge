@@ -13,7 +13,7 @@ _argv = sys.argv
 _HOME = tempfile.mkdtemp(prefix="bridge-tasktrack-")
 sys.argv = [_argv[0], _HOME]
 try:
-    from feishu_bridge import fleet_bridge as b
+    from feishu_bridge.bridge import fleet_bridge as b
 finally:
     sys.argv = _argv
 

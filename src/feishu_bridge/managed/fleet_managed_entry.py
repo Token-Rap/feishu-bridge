@@ -10,9 +10,9 @@ import time
 import contextvars
 from dataclasses import dataclass
 
-from feishu_bridge import app_frontend as frontend_context
-from feishu_bridge import fleet_managed_ingress as ingress
-from feishu_bridge import fleet_managed_runtime as runtime_module
+from feishu_bridge.bridge import app_frontend as frontend_context
+from feishu_bridge.managed import fleet_managed_ingress as ingress
+from feishu_bridge.managed import fleet_managed_runtime as runtime_module
 
 _NATIVE_PROMPT = contextvars.ContextVar("managed_original_native_prompt", default=None)
 
@@ -62,9 +62,9 @@ class Entry:
         return r
 
     async def handle_frame(self, req, writer):
-        from feishu_bridge.fleet_managed_output import refuse_entry_delivery
+        from feishu_bridge.managed.fleet_managed_output import refuse_entry_delivery
         refuse_entry_delivery(self)
-        from feishu_bridge.fleet_managed_diagnostic import refuse_entry_delivery
+        from feishu_bridge.managed.fleet_managed_diagnostic import refuse_entry_delivery
         refuse_entry_delivery(self)
         route = self.binding()
         require(type(req) is dict and req.get("type") == "user_message",
@@ -114,9 +114,9 @@ class Entry:
     async def _execute(self, payload):
         # This dispatch context still has the native WORK chat and exact DISPLAY,
         # actor, original client and full text; no old normalization or mirror.
-        from feishu_bridge.fleet_managed_diagnostic import bind_entry
+        from feishu_bridge.managed.fleet_managed_diagnostic import bind_entry
         bind_entry(self)
-        from feishu_bridge.fleet_managed_output import remember_frontend
+        from feishu_bridge.managed.fleet_managed_output import remember_frontend
         remember_frontend(self)
         await self.inject(payload["text"], payload["client"])
 
@@ -178,12 +178,12 @@ class Entry:
         require(payload["work_id"] not in self._native_owners,
                 "managed_native_owner_conflict")
         self._native_started.add(payload["work_id"])
-        from feishu_bridge import fleet_managed_child
+        from feishu_bridge.managed import fleet_managed_child
         owner = fleet_managed_child.NativeChild(self)
         # No subprocess can be created until _live verifies this exact record.
         # Identity failure/UNKNOWN retains the owner and its returned Process.
         self._native_owners[payload["work_id"]] = owner
-        from feishu_bridge.fleet_managed_diagnostic import bind_native
+        from feishu_bridge.managed.fleet_managed_diagnostic import bind_native
         bind_native(owner, self)
         return owner
 

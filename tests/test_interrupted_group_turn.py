@@ -11,7 +11,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 _argv = sys.argv
 sys.argv = [_argv[0], tempfile.mkdtemp(prefix="cut-turn-")]
 try:
-    from feishu_bridge import fleet_bridge as FB
+    from feishu_bridge.bridge import fleet_bridge as FB
 finally:
     sys.argv = _argv
 

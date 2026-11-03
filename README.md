@@ -25,16 +25,28 @@ mkdir -p ~/.fleet-example-bridge
 ```bash
 FEISHU_BRIDGE_VENV="$PWD/.venv/bin/python" ./scripts/fleet_ctl.sh start ~/.fleet-example-bridge
 ./scripts/fleet_ctl.sh status ~/.fleet-example-bridge
-.venv/bin/python -m feishu_bridge.fleet_admin list
+.venv/bin/python -m feishu_bridge.admin.fleet_admin list
 ```
 
 命令中的 `example` 是占位符，请替换为实例名称。`fleet_ctl.sh` 是手动管理方式；不要与自动拉起同一实例的进程管理器同时使用。
 
 ## 代码与测试
 
-业务模块位于 `src/feishu_bridge/`，以 `feishu_bridge.*` 导入；`scripts/` 存放运维脚本，`tests/` 存放测试，`probes/` 存放独立诊断探针。安装后可用 `.venv/bin/python -m feishu_bridge.fleet_bridge <home>` 启动网关，或用 `.venv/bin/python -m feishu_bridge.fleet_watchdog` 启动 watchdog。迁移工具使用 `.venv/bin/python scripts/migrate_runtime_deepseek.py`。
+业务模块位于 `src/feishu_bridge/`，以 `feishu_bridge.*` 导入；`scripts/` 存放运维脚本，`tests/` 存放测试，`probes/` 存放独立诊断探针。安装后可用 `.venv/bin/python -m feishu_bridge.bridge.fleet_bridge <home>` 启动网关，或用 `.venv/bin/python -m feishu_bridge.watchdog.fleet_watchdog` 启动 watchdog。迁移工具使用 `.venv/bin/python scripts/migrate_runtime_deepseek.py`。
 
-`fleet_bridge.py` 负责消息和 agent 桥接；`fleet_sessions.py` 管理会话，`fleet_admin.py` 提供管理 CLI，其余模块处理运行状态、消息格式及相关能力。
+```text
+src/feishu_bridge/
+├── __init__.py
+├── bridge/       桥接核心、传输、通用工具与前端卡片
+├── sessions/     会话、滚动、worktree 与目标控制
+├── admin/        管理命令与应用开通
+├── watchdog/     看门狗监测与恢复
+├── managed/      managed 子进程、运行时、持久化与入口
+├── codex/        Codex 审批、归档恢复与存储
+└── questions/    Codex 问题流与默认问题
+```
+
+每个目录都是 Python 子包；例如使用 `from feishu_bridge.sessions import fleet_sessions` 导入会话模块。`fleet_managed_codex` 归入 managed，因为它服务于 managed 子进程的 Codex 运行时。
 
 ```bash
 .venv/bin/pip install pytest

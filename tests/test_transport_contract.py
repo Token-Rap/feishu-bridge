@@ -27,8 +27,8 @@ _TMP_HOME = tempfile.mkdtemp(prefix="bridge-test-home-")
 _argv = sys.argv
 sys.argv = [_argv[0], _TMP_HOME]
 try:
-    from feishu_bridge import fleet_bridge as b  # noqa: E402
-    from feishu_bridge import transport as t  # noqa: E402
+    from feishu_bridge.bridge import fleet_bridge as b  # noqa: E402
+    from feishu_bridge.bridge import transport as t  # noqa: E402
 finally:
     sys.argv = _argv
 
@@ -121,7 +121,7 @@ def test_unknown_attr_falls_back_and_warns(ft, monkeypatch):
 
 def test_core_uses_no_feishu_specific_calls():
     """核心逻辑里不该再出现飞书专有方法名 —— 这是本次重构的验收线。"""
-    src = (_REPO / "src/feishu_bridge/fleet_bridge.py").read_text("utf-8")
+    src = (_REPO / "src/feishu_bridge/bridge/fleet_bridge.py").read_text("utf-8")
     forbidden = ["add_reaction", "remove_reaction", "upload_image", "send_image",
                  "upload_video", "download_resource", "pin_message",
                  "create_stream_card", "send_card_by_id", "stream_put", "stream_finish"]

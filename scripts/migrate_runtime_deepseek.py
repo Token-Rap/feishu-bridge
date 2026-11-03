@@ -36,7 +36,7 @@ import sys
 import time
 from pathlib import Path
 
-from feishu_bridge import fleet_providers as P  # noqa: E402
+from feishu_bridge.bridge import fleet_providers as P  # noqa: E402
 
 HIDE = {"anthropic", "openai"}
 
@@ -92,7 +92,7 @@ def registries(fleet_json: Path | None = None, fleets_dir: Path | None = None) -
     """[(owner, name, home, remote_addr)] —— gzt 飞书 fleet + 各租户 App fleet。"""
     out = []
     if fleet_json is None:
-        from feishu_bridge.fleet_env import fleet_registry_path  # noqa: PLC0415
+        from feishu_bridge.bridge.fleet_env import fleet_registry_path  # noqa: PLC0415
         fleet_json = fleet_registry_path()
     if fleets_dir is None:
         base = os.environ.get("FLEET_APP_DIR")
@@ -158,7 +158,7 @@ def main(argv=None) -> int:
         if not a.apply:
             continue
         shutil.copy2(home / "runtime.json", home / f"runtime.json.bak-{stamp}")
-        from feishu_bridge import fleet_admin  # noqa: PLC0415
+        from feishu_bridge.admin import fleet_admin  # noqa: PLC0415
         fleet_admin.write_runtime(home, model="default")
     print(f"\n{'已改' if a.apply else '[dry-run] 将改'} {changed} 个; "
           f"{'备份 runtime.json.bak-' + stamp if a.apply else '什么都没写, 确认后加 --apply'}")

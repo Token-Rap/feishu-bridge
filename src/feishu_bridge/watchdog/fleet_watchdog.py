@@ -19,7 +19,7 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
-from feishu_bridge.fleet_env import env_any, fleet_registry_path   # 新名优先, 回落旧名 (改名迁移)
+from feishu_bridge.bridge.fleet_env import env_any, fleet_registry_path   # 新名优先, 回落旧名 (改名迁移)
 
 FLEET = fleet_registry_path()   # 只此一份, 见 fleet_env
 STALE_S = int(env_any("FLEET_HEARTBEAT_STALE_S", "FEISHU_HEARTBEAT_STALE_S", default="180"))   # 心跳 30s 一次, 180s=6 次没写=卡死

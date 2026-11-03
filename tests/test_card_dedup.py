@@ -1,5 +1,5 @@
 """Behavioral regression coverage."""
-from feishu_bridge import task_card
+from feishu_bridge.bridge import task_card
 
 
 def _track(**chats):
@@ -51,7 +51,7 @@ def test_order_is_stable():
 # 广播时移除会话标签，CLI 写回仍可使用标签。
 def test_broadcast_strips_chat_tag(monkeypatch):
     """合并后的任务不应携带单一会话标签。"""
-    from feishu_bridge import fleet_bridge as fb
+    from feishu_bridge.bridge import fleet_bridge as fb
     sent = []
     monkeypatch.setattr(fb, "_TASK_TRACK",
                         {"app": {"sid": "", "items": [

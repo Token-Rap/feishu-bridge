@@ -10,7 +10,7 @@ import pytest
 
 _REPO = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(_REPO))
-from feishu_bridge import fleet_watchdog as w  # noqa: E402
+from feishu_bridge.watchdog import fleet_watchdog as w  # noqa: E402
 
 
 @pytest.fixture(autouse=True)

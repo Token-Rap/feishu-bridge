@@ -5,7 +5,7 @@ import copy
 import pytest
 
 from test_codex_approvals import answer, flush, harness, request
-from feishu_bridge import codex_approvals as ca
+from feishu_bridge.codex import codex_approvals as ca
 
 
 def permission_request(permissions, **extra):

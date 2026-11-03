@@ -7,8 +7,8 @@ not an external one-shot issuer, native-home fence or blocked-IO deadline.
 """
 from dataclasses import dataclass
 
-from feishu_bridge import fleet_managed_ingress as ingress
-from feishu_bridge import fleet_target_control as coordinator
+from feishu_bridge.managed import fleet_managed_ingress as ingress
+from feishu_bridge.sessions import fleet_target_control as coordinator
 
 _ORIGINALS = {}
 _EPOCHS = {}
@@ -98,7 +98,7 @@ def _work(o, db):
 def remember_dispatch(actual, action, c, physical):
     # Private trusted seam only. A constructed Original/Action alone cannot
     # enroll; the original CURRENT and exact persistent dispatched parent qualify.
-    from feishu_bridge.fleet_managed_runtime import Runtime, Action, CURRENT
+    from feishu_bridge.managed.fleet_managed_runtime import Runtime, Action, CURRENT
     require(type(actual) is Runtime and type(action) is Action and CURRENT.get() is action
             and action.runtime is actual and type(c) is coordinator.Control
             and id(action) not in _ORIGINALS)
@@ -128,8 +128,8 @@ def validate_action(actual, action):
 
 
 def bind_entry(entry):
-    from feishu_bridge.fleet_managed_entry import Entry
-    from feishu_bridge.fleet_managed_runtime import CURRENT
+    from feishu_bridge.managed.fleet_managed_entry import Entry
+    from feishu_bridge.managed.fleet_managed_runtime import CURRENT
     require(type(entry) is Entry)
     o = _ORIGINALS.get(id(CURRENT.get()))
     require(o is not None and o.runtime is entry.runtime)
@@ -140,8 +140,8 @@ def bind_entry(entry):
 
 
 def bind_native(native, entry):
-    from feishu_bridge.fleet_managed_child import NativeChild
-    from feishu_bridge.fleet_managed_runtime import CURRENT
+    from feishu_bridge.managed.fleet_managed_child import NativeChild
+    from feishu_bridge.managed.fleet_managed_runtime import CURRENT
     o = _ORIGINALS.get(id(CURRENT.get()))
     require(type(native) is NativeChild and o is not None
             and _ENTRIES.get((id(entry),id(o.action))) == (entry,o)

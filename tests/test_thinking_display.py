@@ -9,7 +9,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 _argv = sys.argv
 sys.argv = [_argv[0], tempfile.mkdtemp(prefix="thinking-test-")]
 try:
-    from feishu_bridge import fleet_bridge as fb  # noqa: E402
+    from feishu_bridge.bridge import fleet_bridge as fb  # noqa: E402
 finally:
     sys.argv = _argv
 
@@ -40,7 +40,7 @@ def test_missing_field_yields_empty_not_crash():
 def test_spread_not_hardcoded_kwarg():
     """构造处必须是 `**_thinking_opt()` —— 写成 `thinking=...` 的话, 上面那条
     fail-soft 就白做了 (字段不存在时照样 TypeError)。"""
-    src = (Path(__file__).resolve().parent.parent / "src/feishu_bridge/fleet_bridge.py").read_text(encoding="utf-8")
+    src = (Path(__file__).resolve().parent.parent / "src/feishu_bridge/bridge/fleet_bridge.py").read_text(encoding="utf-8")
     seg = src[src.index("opts = ClaudeAgentOptions("):]
     seg = seg[:seg.index("include_partial_messages")]
     assert "**_thinking_opt()" in seg

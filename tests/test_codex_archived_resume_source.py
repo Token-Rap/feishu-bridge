@@ -10,7 +10,7 @@ from pathlib import Path
 import sys
 import pytest
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from feishu_bridge import codex_archived_resume as a
+from feishu_bridge.codex import codex_archived_resume as a
 import test_codex_questions as public
 
 SID = '22222222-3333-4444-8555-666666666666'
@@ -96,7 +96,7 @@ def path_namespace(monkeypatch,tmp_path):
     home=fixture.scope.desktop_home;home.mkdir(mode=0o700)
     receipt=(tmp_path/'owned-receipt');receipt.mkdir();receipt.chmod(0o700)
     ns.update(Path=Path,_codex_archived=a,_CODEX_ARCHIVED=a.Store(receipt.resolve()),CODEX_BIN=a.PIN_PATH)
-    tree=ast.parse((public.ROOT/'src/feishu_bridge/fleet_bridge.py').read_text())
+    tree=ast.parse((public.ROOT/'src/feishu_bridge/bridge/fleet_bridge.py').read_text())
     defs=[n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name in {'_codex_archived_binding','_codex_archived_reply'}]
     exec(compile(ast.Module(defs,type_ignores=[]),'ACTUAL_ARCHIVE_HELPERS','exec'),ns)
     # Bind the mandatory real fixture Scope for old direct helper controls.
@@ -277,7 +277,7 @@ def test_integrated_owned_response_drift_cannot_mint_or_transfer_receipt(monkeyp
     def write(raw):
         if json.loads(raw).get('method')=='thread/resume':
             if mutation=='marker':
-                from feishu_bridge import fleet_codex_storage as storage
+                from feishu_bridge.codex import fleet_codex_storage as storage
                 p=ns['_storage_fixture'].scope.home/storage.MARKER
                 data=json.loads(p.read_text());data['namespace']='d'*32;p.write_text(json.dumps(data))
             if mutation=='process':ns['CODEX_PROCS']['work']=object()

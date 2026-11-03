@@ -65,7 +65,7 @@ def read_sessions() -> dict:
     完全无法区分。
     """
     if MANAGED_TRANSACTION is not None:
-        from feishu_bridge import fleet_managed_map
+        from feishu_bridge.managed import fleet_managed_map
         return fleet_managed_map.read(SESSIONS_FILE)
     if not SESSIONS_FILE.exists():
         return {}                       # 首次运行, 不是异常
@@ -79,7 +79,7 @@ def read_sessions() -> dict:
 
 def write_sessions(data: dict) -> None:
     if MANAGED_TRANSACTION is not None:
-        from feishu_bridge import fleet_managed_map
+        from feishu_bridge.managed import fleet_managed_map
         context = _MAP_TRANSACTION.get()
         if type(context) is not tuple or len(context) != 2 or context[0] is not True:
             raise fleet_managed_map.Refused("managed_map_transaction_required")

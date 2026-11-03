@@ -2,7 +2,7 @@
 import asyncio
 import json
 
-from feishu_bridge import app_frontend
+from feishu_bridge.bridge import app_frontend
 
 
 class _W:

@@ -5,7 +5,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from feishu_bridge.fleet_admin import _PRICING, _PRICING_CALIBRATED, _price  # noqa: E402
+from feishu_bridge.admin.fleet_admin import _PRICING, _PRICING_CALIBRATED, _price  # noqa: E402
 
 
 def test_sonnet_5_is_the_cheaper_standard_price():
@@ -34,7 +34,7 @@ def test_longest_key_wins_regardless_of_dict_order():
     """**匹配不许依赖书写顺序。** 顺序匹配是个不显眼的隐式约定: 谁重排一下 dict 就全错,
     而且不报错 —— 报告照出, 只是数字变了。这条把顺序打乱再验一次。
     """
-    from feishu_bridge import fleet_admin as fa
+    from feishu_bridge.admin import fleet_admin as fa
     old = fa._PRICING
     try:
         fa._PRICING = dict(reversed(list(old.items())))     # 顺序完全颠倒
@@ -52,7 +52,7 @@ def test_unknown_model_estimates_high():
 
 def test_report_shows_the_calibration_date():
     'Reports show the pricing table calibration date.'
-    src = (Path(__file__).resolve().parent.parent / "src/feishu_bridge/fleet_admin.py").read_text(encoding="utf-8")
+    src = (Path(__file__).resolve().parent.parent / "src/feishu_bridge/admin/fleet_admin.py").read_text(encoding="utf-8")
     assert "价格表校准于 {_PRICING_CALIBRATED}" in src
 
 
@@ -95,7 +95,7 @@ def test_unknown_deepseek_model_is_unknown_not_most_expensive():
 
 def test_unpriced_tokens_are_reported_not_guessed(tmp_path):
     import json
-    from feishu_bridge import fleet_admin as fa
+    from feishu_bridge.admin import fleet_admin as fa
     proj = tmp_path / "p"
     proj.mkdir()
     now = datetime.now(timezone.utc).isoformat()

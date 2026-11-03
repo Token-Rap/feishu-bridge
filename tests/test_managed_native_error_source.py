@@ -25,7 +25,7 @@ def error_fixture(b, monkeypatch, *, retry=False, alias=ABSENT, message=FATAL, e
         ns['SENDER'].send = lambda *a, **kw: captured['notices'].append((a, kw))
         ns['_write_codex_status'] = lambda *a, **kw: captured['statuses'].append(a)
         ns['_append_codex_ledger'] = lambda *a, **kw: captured['ledgers'].append(a)
-        source = ast.parse((Path(__file__).parents[1] / 'src/feishu_bridge/fleet_bridge.py').read_text())
+        source = ast.parse((Path(__file__).parents[1] / 'src/feishu_bridge/bridge/fleet_bridge.py').read_text())
         nodes = [node for node in source.body if
                  isinstance(node, ast.FunctionDef) and node.name == '_codex_is_informational'
                  or isinstance(node, ast.Assign) and any(isinstance(target, ast.Name)

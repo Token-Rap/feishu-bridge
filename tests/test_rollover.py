@@ -7,7 +7,7 @@ import time
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from feishu_bridge import fleet_rollover as ro  # noqa: E402
+from feishu_bridge.sessions import fleet_rollover as ro  # noqa: E402
 
 
 def _transcript(tmp_path, markers):

@@ -4,7 +4,7 @@ import tempfile
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from feishu_bridge import app_frontend
+from feishu_bridge.bridge import app_frontend
 
 
 def _front():

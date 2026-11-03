@@ -6,7 +6,7 @@ import tempfile
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from feishu_bridge.app_frontend import AppFrontend  # noqa: E402
+from feishu_bridge.bridge.app_frontend import AppFrontend  # noqa: E402
 
 
 def _front() -> AppFrontend:
@@ -38,7 +38,7 @@ def test_origin_is_recorded_from_the_url_query():
 
 def test_broadcast_uses_origin_or():
     """钉住调用点: 三处回显广播都要过 origin_or, 少一处就是那一种媒体仍然看不见。"""
-    src = (Path(__file__).resolve().parent.parent / "src/feishu_bridge/fleet_bridge.py").read_text(encoding="utf-8")
+    src = (Path(__file__).resolve().parent.parent / "src/feishu_bridge/bridge/fleet_bridge.py").read_text(encoding="utf-8")
     seg = src[src.index("async def _app_inject_image"):]
     seg = seg[:seg.index("if caption:")]
     assert seg.count("APP_FRONT.origin_or(p)") == 2, "image/video 两处回显没都换"
@@ -46,6 +46,6 @@ def test_broadcast_uses_origin_or():
 
 def test_recording_failure_does_not_break_download():
     """记不住原路径只是回显退回老行为 —— 不该让整个下载失败 (fail-soft)。"""
-    src = (Path(__file__).resolve().parent.parent / "src/feishu_bridge/app_frontend.py").read_text(encoding="utf-8")
+    src = (Path(__file__).resolve().parent.parent / "src/feishu_bridge/bridge/app_frontend.py").read_text(encoding="utf-8")
     seg = src[src.index("def _fetch_to_local"):src.index("def origin_or")]
     assert "except Exception" in seg.split("origin = parse_qs")[1]

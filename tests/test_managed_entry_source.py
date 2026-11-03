@@ -11,11 +11,11 @@ from types import SimpleNamespace
 
 import pytest
 
-from feishu_bridge import app_frontend as front
-from feishu_bridge import fleet_managed_entry as entry
-from feishu_bridge import fleet_managed_ingress as ingress
-from feishu_bridge import fleet_managed_runtime as runtime
-from feishu_bridge import fleet_target_control as control
+from feishu_bridge.bridge import app_frontend as front
+from feishu_bridge.managed import fleet_managed_entry as entry
+from feishu_bridge.managed import fleet_managed_ingress as ingress
+from feishu_bridge.managed import fleet_managed_runtime as runtime
+from feishu_bridge.sessions import fleet_target_control as control
 
 TEXT = " \ufeffe\u0301 中文👩‍💻\r\n" + "完整原文\n" * 180 + "  "
 
@@ -198,7 +198,7 @@ def test_duplicate_frame_cannot_dispatch_or_mirror_twice(bound):
 
 
 def extract(name):
-    tree=ast.parse((Path(__file__).parents[1]/"src/feishu_bridge/fleet_bridge.py").read_text())
+    tree=ast.parse((Path(__file__).parents[1]/"src/feishu_bridge/bridge/fleet_bridge.py").read_text())
     node=next(n for n in tree.body if isinstance(n,ast.AsyncFunctionDef) and n.name==name)
     return ast.fix_missing_locations(ast.Module(body=[node],type_ignores=[]))
 
@@ -224,7 +224,7 @@ def test_actual_run_turn_checks_exact_entry_before_question_or_native_branch():
 
 
 def test_unbound_startup_guard_and_real_start_callback_dependency_are_retained(tmp_path):
-    from feishu_bridge import fleet_managed_bootstrap
+    from feishu_bridge.managed import fleet_managed_bootstrap
     with pytest.raises(ingress.Refused,match="managed_full_lifecycle_unbound"):
         fleet_managed_bootstrap.require_startup_binding({"FLEET_TARGET_CONTROL_REQUIRED":"1",
             "FLEET_TARGET_CONTROL_DIR":str(tmp_path), "FLEET_TARGET_CONTROL_ID":"fixture", "FLEET_BRIDGE_HOME":str(tmp_path)},[])

@@ -16,7 +16,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 _argv = sys.argv
 sys.argv = [_argv[0], tempfile.mkdtemp(prefix="retry-meta-")]
 try:
-    from feishu_bridge import fleet_bridge as b
+    from feishu_bridge.bridge import fleet_bridge as b
 finally:
     sys.argv = _argv
 
@@ -72,7 +72,7 @@ def test_body_keeps_its_parens_so_the_client_can_strip_the_suffix():
 def test_retry_command_is_recognised():
     """按钮走 command 帧 → 不回显用户气泡; 而 _app_command 只收斜杠命令。"""
     src = Path(__file__).resolve().parent.parent.joinpath(
-        "src/feishu_bridge/fleet_bridge.py").read_text(encoding="utf-8")
+        "src/feishu_bridge/bridge/fleet_bridge.py").read_text(encoding="utf-8")
     assert 'if low == "/retry":' in src, "/retry 分支没接上"
     assert 'text, low = "重试", "重试"' in src, (
         "/retry 应该翻译成普通消息「重试」而不是机械重跑上一条 prompt —— "
