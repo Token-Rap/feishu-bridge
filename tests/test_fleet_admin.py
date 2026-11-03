@@ -16,7 +16,7 @@ from pathlib import Path
 import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-import fleet_admin as adm  # noqa: E402
+from feishu_bridge import fleet_admin as adm  # noqa: E402
 
 
 # ── runtime.json 读写 ────────────────────────────────────────────────
@@ -365,7 +365,7 @@ def test_imports_and_writes_without_fcntl(tmp_path):
         "calls = []\n"
         "sys.modules['msvcrt'] = types.SimpleNamespace(LK_LOCK=1, locking=lambda fd, m, n: calls.append(m))\n"
         f"sys.path.insert(0, {str(Path(__file__).resolve().parents[1])!r})\n"
-        "import fleet_admin as adm\n"
+        "from feishu_bridge import fleet_admin as adm\n"
         f"rt = adm.write_runtime({str(tmp_path)!r}, model='claude-opus-5-5')\n"
         "assert rt['model'] == 'claude-opus-5-5' and calls == [1], (rt, calls)\n"
         "print('ok')\n")

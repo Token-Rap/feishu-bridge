@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import os
 import sys
-from fleet_managed_bootstrap import require_startup_binding as _managed_startup_binding
+from feishu_bridge.fleet_managed_bootstrap import require_startup_binding as _managed_startup_binding
 _managed_startup_binding(dict(os.environ), sys.argv)
 
 import asyncio
@@ -16,11 +16,11 @@ except ImportError:                   # Windows 节点无 fcntl → msvcrt 等�
     fcntl = None
     import msvcrt
 import itertools
-import codex_approvals
-import codex_questions
-import question_defaults_producer
-import question_defaults_intents
-import peer_reports
+from feishu_bridge import codex_approvals
+from feishu_bridge import codex_questions
+from feishu_bridge import question_defaults_producer
+from feishu_bridge import question_defaults_intents
+from feishu_bridge import peer_reports
 import hashlib
 import json
 import os
@@ -37,8 +37,7 @@ from urllib.request import Request, urlopen
 
 from dotenv import load_dotenv
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-from fleet_risk import classify_risk  # noqa: E402  (同目录纯逻辑模块)
+from feishu_bridge.fleet_risk import classify_risk  # noqa: E402  (同目录纯逻辑模块)
 
 import lark_oapi as lark
 from lark_oapi.api.im.v1 import P2ImMessageReceiveV1
@@ -69,10 +68,10 @@ from claude_agent_sdk import (
 # 环境变量双轨读取 (改名迁移): 新名 FLEET_BRIDGE_* 优先, 回落旧名。
 # ⚠ **这一行必须在下面 _BRIDGE_HOME 之前** —— 那是导入期第一个用到 _env 的地方,
 
-from fleet_env import env as _env  # noqa: E402
-from fleet_common import (  # noqa: E402  (T022: leaf helpers; log stays local for import-time AST guard)
+from feishu_bridge.fleet_env import env as _env  # noqa: E402
+from feishu_bridge.fleet_common import (  # noqa: E402  (T022: leaf helpers; log stays local for import-time AST guard)
     ctx_tokens as _ctx_tokens, mu_total as _mu_total, chunks as _chunks)
-from fleet_failures import (  # noqa: E402  (T022: failure/retry wording)
+from feishu_bridge.fleet_failures import (  # noqa: E402  (T022: failure/retry wording)
     _NET_ERR_KEYS, _AUTH_ERR_KEYS, _TLS_ERR_KEYS, _RESULT_FIELDS_MAX,
     _retry_summary, _retry_user_note, looks_like_api_error,
     _error_suffix, _failure_meta, _result_fields_line, _failure_tip,
@@ -118,12 +117,12 @@ OAUTH_TOKEN = os.getenv("CLAUDE_CODE_OAUTH_TOKEN", "").strip()
 
 # 为同步副本 (改飞书转换逻辑两边都要同步)。硬 import — 缺了直接 ImportError 启动即暴露,
 # 不再静默回落 identity (那会让 ##/表格 变裸文本却不报错).
-from fleet_markdown import md_to_feishu  # noqa: E402  (同目录, parent 已在 line 37 入 path)
-from transport import Transport  # noqa: E402  (前端抽象接口, FeishuTransport 是其飞书实现)
-import app_frontend  # noqa: E402  (群聊要读 CUR_CHAT 这个 contextvar)
-import fleet_codex_storage as _codex_storage
-import task_card    # noqa: E402  (共用 merged(): 卡上的序号两边必须是同一套)
-from app_frontend import AppFrontend, TeeTransport, tool_brief  # noqa: E402  (Web 前端: socket 事件源 + 回复双写)
+from feishu_bridge.fleet_markdown import md_to_feishu  # noqa: E402  (同目录, parent 已在 line 37 入 path)
+from feishu_bridge.transport import Transport  # noqa: E402  (前端抽象接口, FeishuTransport 是其飞书实现)
+from feishu_bridge import app_frontend  # noqa: E402  (群聊要读 CUR_CHAT 这个 contextvar)
+from feishu_bridge import fleet_codex_storage as _codex_storage
+from feishu_bridge import task_card    # noqa: E402  (共用 merged(): 卡上的序号两边必须是同一套)
+from feishu_bridge.app_frontend import AppFrontend, TeeTransport, tool_brief  # noqa: E402  (Web 前端: socket 事件源 + 回复双写)
 
 
 
@@ -498,12 +497,12 @@ def _persist_ratelimit(rate_limit_info) -> None:
 
 
 # ── 多会话持久 (resume/fork/切换) → 抽到 fleet_sessions.py 便于单测 (无 lark/sdk 依赖) ──
-import fleet_sessions as _fs  # noqa: E402  (同目录, parent 已在 line 37 入 path)
+from feishu_bridge import fleet_sessions as _fs  # noqa: E402  (同目录, parent 已在 line 37 入 path)
 _fs.SESSIONS_FILE = _BRIDGE_HOME / "sessions.json"
 # DeepSeek 等 provider: engine 仍是 claude, 只换环境变量。见 fleet_providers.py
-import fleet_providers as _prov  # noqa: E402
+from feishu_bridge import fleet_providers as _prov  # noqa: E402
 _SESSION_PROVIDERS_FILE = _BRIDGE_HOME / "session_providers.json"   # sid → provider (跨提供方 resume 护栏)
-from fleet_quote import pick_quote_ref, remember_sent, load_sent_cache, save_sent_cache, load_notify_entry  # noqa: E402  (引用 ref 判定 + 出站正文缓存, 纯逻辑)
+from feishu_bridge.fleet_quote import pick_quote_ref, remember_sent, load_sent_cache, save_sent_cache, load_notify_entry  # noqa: E402  (引用 ref 判定 + 出站正文缓存, 纯逻辑)
 _fs.LOG = log
 # 别名: bridge 内部仍用 _ 前缀名 (调用点不变)
 _read_sessions = _fs.read_sessions
@@ -1048,7 +1047,7 @@ CODEX_APPROVALS_REVIEWER = os.getenv("FLEET_CODEX_APPROVALS_REVIEWER", "")
 CODEX_PERMISSIONS_PROBE = os.getenv("FLEET_CODEX_PERMISSIONS_PROBE", "")
 CODEX_APPROVALS: dict[str, codex_approvals.Approvals] = {}
 CODEX_QUESTIONS = codex_questions.Registry(lambda ev: APP_FRONT.broadcast(ev), lambda s: log(s))
-import codex_archived_resume as _codex_archived  # exact native resume refusal only
+from feishu_bridge import codex_archived_resume as _codex_archived  # exact native resume refusal only
 _CODEX_ARCHIVED = _codex_archived.Store(_BRIDGE_HOME)
 _QUESTION_CONTINUATION = contextvars.ContextVar("codex_question_continuation", default=None)
 _QUESTION_TASKS: set[asyncio.Task] = set()
@@ -1889,7 +1888,7 @@ def _append_codex_ledger(chat_id: str, model: str, effort: str, thread: str,
                          error: str = "", *, writer=None) -> None:
     observed = None
     if writer is not None:
-        from fleet_managed_persistence import begin
+        from feishu_bridge.fleet_managed_persistence import begin
         observed = begin(writer, "ledger", chat_id, thread, CODEX_LEDGER_FILE)
     try:
         if observed is not None:
@@ -1939,7 +1938,7 @@ def _write_codex_status(chat_id: str, model: str, effort: str, thread: str,
                         usage: dict, exit_code: int | None, *, writer=None) -> None:
     observed = None
     if writer is not None:
-        from fleet_managed_persistence import begin
+        from feishu_bridge.fleet_managed_persistence import begin
         observed = begin(writer, "status", chat_id, thread, _STATUS_FILE)
     try:
         prev: dict = {}
@@ -2731,7 +2730,7 @@ def make_ask_hook(chat_id: str):
 
 
 try:
-    import fleet_worktree as _fleet_wt
+    from feishu_bridge import fleet_worktree as _fleet_wt
 except Exception:  # noqa: BLE001 - the guard is optional; a broken import must not take the bridge down
     _fleet_wt = None
 
@@ -4056,10 +4055,10 @@ async def _run_turn_codex(chat_id: str, prompt: str, message_id: str | None = No
                                  time.monotonic() - t0, err_text)
     except _codex_archived.ArchivedResumeError as exc:
         if managed_selected:
-            from fleet_managed_persistence import hold_entry_original
+            from feishu_bridge.fleet_managed_persistence import hold_entry_original
             if not hold_entry_original(managed_entry):
                 managed_entry.runtime.hold_unknown()
-            from fleet_managed_ingress import Refused
+            from feishu_bridge.fleet_managed_ingress import Refused
             raise Refused("managed_native_turn_unknown") from None
         err_text = f"{type(exc).__name__}: {exc}"
         log(f"[{chat_id[:8]}] Codex 原生续接拒绝: {err_text}")
@@ -4075,10 +4074,10 @@ async def _run_turn_codex(chat_id: str, prompt: str, message_id: str | None = No
                              time.monotonic() - t0, err_text)
     except Exception as exc:  # noqa: BLE001
         if managed_selected:
-            from fleet_managed_persistence import hold_entry_original
+            from feishu_bridge.fleet_managed_persistence import hold_entry_original
             if not hold_entry_original(managed_entry):
                 managed_entry.runtime.hold_unknown()
-            from fleet_managed_ingress import Refused
+            from feishu_bridge.fleet_managed_ingress import Refused
             raise Refused("managed_native_turn_unknown") from None
         err_text = f"{type(exc).__name__}: {exc}"
         log(f"[{chat_id[:8]}] Codex turn 异常: {err_text}")
@@ -4104,15 +4103,15 @@ async def _run_turn_codex(chat_id: str, prompt: str, message_id: str | None = No
         question_shutdown_ok = False
         try:
             if managed_selected and managed_native is None:
-                from fleet_managed_ingress import Refused
+                from feishu_bridge.fleet_managed_ingress import Refused
                 raise Refused("managed_native_owner_unbound")
             if managed_native is not None:
                 try:
                     disposition = await managed_native.finish(proc, stderr_task)
                 except BaseException:
-                    from fleet_managed_persistence import hold_entry_original
+                    from feishu_bridge.fleet_managed_persistence import hold_entry_original
                     if hold_entry_original(managed_entry):
-                        from fleet_managed_ingress import Refused
+                        from feishu_bridge.fleet_managed_ingress import Refused
                         raise Refused("managed_native_turn_unknown") from None
                     raise  # Pre-persistence cleanup remains exact predecessor scope.
                 question_shutdown_ok = disposition.returncode == 0
@@ -5313,7 +5312,7 @@ async def _new_session(chat_id: str) -> None:
 # one-shot session (off the chat channel: nothing reaches the App at 3 am, the original
 # session is untouched), then gets a fresh session whose first turn is told to read the note.
 # ⚠ Fail-soft everywhere: any failure keeps the old session; the whole fleet runs this code.
-import fleet_rollover as _ro  # noqa: E402
+from feishu_bridge import fleet_rollover as _ro  # noqa: E402
 ROLLOVER_HOLD: set[str] = set()          # chat keys mid-rollover: inbound messages queue
 _ROLLOVER_TRIED: dict[str, str] = {}     # chat key -> local date attempted (no retry the same night)
 _ROLLOVER_SKIPPED: dict[str, str] = {}   # chat key -> local date an "unsafe" skip was logged

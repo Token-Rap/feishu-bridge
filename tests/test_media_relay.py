@@ -14,7 +14,7 @@ sys.path.insert(0, str(_REPO))
 _argv = sys.argv
 sys.argv = [_argv[0], tempfile.mkdtemp(prefix="bridge-relay-test-")]
 try:
-    from app_frontend import AppFrontend, TeeTransport
+    from feishu_bridge.app_frontend import AppFrontend, TeeTransport
 finally:
     sys.argv = _argv
 

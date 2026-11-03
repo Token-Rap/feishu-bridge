@@ -3,8 +3,8 @@ import json
 
 import pytest
 
-import fleet_managed_codex as policy
-from fleet_managed_ingress import Refused
+from feishu_bridge import fleet_managed_codex as policy
+from feishu_bridge.fleet_managed_ingress import Refused
 
 
 def selected(tmp_path):
@@ -56,7 +56,7 @@ def test_partial_selection_refuses_before_any_command(tmp_path, key):
 
 
 def test_actual_scope_methods_bind_same_scope_without_replacing_account_checks(tmp_path, monkeypatch):
-    import fleet_codex_storage as storage
+    from feishu_bridge import fleet_codex_storage as storage
     env = selected(tmp_path)
     for key, value in env.items():
         monkeypatch.setenv(key, value)

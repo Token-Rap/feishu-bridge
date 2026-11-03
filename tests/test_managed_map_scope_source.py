@@ -8,10 +8,10 @@ from types import SimpleNamespace
 
 import pytest
 
-import fleet_managed_ingress as ingress
-import fleet_managed_runtime as runtime
-import fleet_sessions as sessions
-import fleet_target_control as control
+from feishu_bridge import fleet_managed_ingress as ingress
+from feishu_bridge import fleet_managed_runtime as runtime
+from feishu_bridge import fleet_sessions as sessions
+from feishu_bridge import fleet_target_control as control
 
 
 @pytest.fixture
@@ -154,7 +154,7 @@ def test_invalid_current_active_pointer_cannot_be_implicitly_repaired(bound, act
 
 
 def test_actual_legacy_rollover_stops_before_model_map_or_note_effects():
-    source = Path(__file__).resolve().parents[1] / "fleet_bridge.py"
+    source = Path(__file__).resolve().parents[1] / "src/feishu_bridge/fleet_bridge.py"
     tree = ast.parse(source.read_bytes())
     fn = next(n for n in tree.body if isinstance(n, ast.AsyncFunctionDef) and n.name == "_rollover_one")
     ns = {"Path": Path, "_fs": SimpleNamespace(MANAGED_TRANSACTION=object())}

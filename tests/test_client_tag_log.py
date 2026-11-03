@@ -14,8 +14,8 @@ sys.path.insert(0, str(_REPO))
 _argv = sys.argv
 sys.argv = [_argv[0], tempfile.mkdtemp(prefix="bridge-client-tag-")]
 try:
-    import fleet_bridge as b       # 导入期就读 argv[1] 当 home, 必须在这个块里
-    from app_frontend import AppFrontend
+    from feishu_bridge import fleet_bridge as b       # 导入期就读 argv[1] 当 home, 必须在这个块里
+    from feishu_bridge.app_frontend import AppFrontend
 finally:
     sys.argv = _argv
 

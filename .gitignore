@@ -17,3 +17,7 @@ status.json
 sessions.json
 ratelimit.json
 *.tmp
+
+*.egg-info/
+build/
+dist/

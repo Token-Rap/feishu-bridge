@@ -13,11 +13,11 @@ _TMP_HOME = tempfile.mkdtemp(prefix="bridge-test-home-")
 _argv = sys.argv
 sys.argv = [_argv[0], _TMP_HOME]
 try:
-    import fleet_bridge as b  # noqa: E402
+    from feishu_bridge import fleet_bridge as b  # noqa: E402
 finally:
     sys.argv = _argv
 
-_SRC = (_REPO / "fleet_bridge.py").read_text("utf-8")
+_SRC = (_REPO / "src/feishu_bridge/fleet_bridge.py").read_text("utf-8")
 
 
 def test_interrupted_flag_tracks_set():
@@ -71,7 +71,7 @@ def test_network_error_auto_retry_is_a_continuation():
     # 写类工具仍要标记不安全 —— 它现在只影响提示文案, 不再拦住重试
     assert "block.name not in _READONLY_TOOLS" in _SRC
     # 那句文案仍在 (给"没重试过"的那种失败用)。T022 后文案在 fleet_failures。
-    failures = (_REPO / "fleet_failures.py").read_text("utf-8")
+    failures = (_REPO / "src/feishu_bridge/fleet_failures.py").read_text("utf-8")
     assert "未自动重试以防重复" in failures
 
 

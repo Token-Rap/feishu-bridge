@@ -10,7 +10,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 _argv = sys.argv
 sys.argv = [_argv[0], tempfile.mkdtemp(prefix="bridge-guard-")]
 try:
-    import fleet_bridge as b
+    from feishu_bridge import fleet_bridge as b
 finally:
     sys.argv = _argv
 
@@ -27,7 +27,7 @@ def test_guard_is_registered_on_every_session():
 
 def test_edit_in_a_main_tree_is_denied(monkeypatch, tmp_path):
     monkeypatch.setattr(b._fleet_wt, "REPOS", {"bridge": tmp_path})
-    out = _call("Edit", {"file_path": str(tmp_path / "fleet_bridge.py")})
+    out = _call("Edit", {"file_path": str(tmp_path / "src/feishu_bridge/fleet_bridge.py")})
     assert out["hookSpecificOutput"]["permissionDecision"] == "deny"
     assert "start bridge" in out["hookSpecificOutput"]["permissionDecisionReason"]
 

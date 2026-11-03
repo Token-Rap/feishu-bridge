@@ -11,11 +11,11 @@ import sys
 
 import pytest
 
-import fleet_managed_child as child
-import fleet_managed_entry as entry
-import fleet_codex_storage as storage
-import fleet_managed_ingress as ingress
-import fleet_managed_runtime as runtime
+from feishu_bridge import fleet_managed_child as child
+from feishu_bridge import fleet_managed_entry as entry
+from feishu_bridge import fleet_codex_storage as storage
+from feishu_bridge import fleet_managed_ingress as ingress
+from feishu_bridge import fleet_managed_runtime as runtime
 from test_managed_entry_source import bound, deliver, TEXT
 
 
@@ -173,7 +173,7 @@ def test_actual_benign_python_child_natural_exit_uses_real_owned_group(native,mo
 
 
 def test_actual_bridge_branch_retains_owner_until_finish_and_has_no_selected_signal_fallback():
-    tree=ast.parse((Path(__file__).parents[1]/'fleet_bridge.py').read_text())
+    tree=ast.parse((Path(__file__).parents[1]/'src/feishu_bridge/fleet_bridge.py').read_text())
     node=next(n for n in tree.body if isinstance(n,ast.AsyncFunctionDef) and n.name=='_run_turn_codex')
     assert any(isinstance(n,ast.Call) and isinstance(n.func,ast.Attribute) and n.func.attr=='native_child' for n in ast.walk(node))
     finally_tree=ast.Module(body=node.body[-1].finalbody,type_ignores=[])
@@ -181,7 +181,7 @@ def test_actual_bridge_branch_retains_owner_until_finish_and_has_no_selected_sig
     assert text.index('await managed_native.finish')<text.index('CODEX_PROCS.pop')
     guarded=next(n for n in ast.walk(finally_tree) if isinstance(n,ast.If) and ast.unparse(n.test)=='managed_native is None and proc is not None')
     assert 'proc.terminate()' in ast.unparse(guarded)
-    helper=ast.parse((Path(__file__).parents[1]/'fleet_managed_child.py').read_text())
+    helper=ast.parse((Path(__file__).parents[1]/'src/feishu_bridge/fleet_managed_child.py').read_text())
     assert not any(isinstance(n,ast.Attribute) and n.attr in {'terminate','kill'} for n in ast.walk(helper))
 
 

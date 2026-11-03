@@ -13,10 +13,10 @@ import pytest
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
-import fleet_providers as P  # noqa: E402
-from app_frontend import AppFrontend  # noqa: E402
+from feishu_bridge import fleet_providers as P  # noqa: E402
+from feishu_bridge.app_frontend import AppFrontend  # noqa: E402
 
-SRC = (ROOT / "fleet_bridge.py").read_text(encoding="utf-8")
+SRC = (ROOT / "src/feishu_bridge/fleet_bridge.py").read_text(encoding="utf-8")
 
 
 @pytest.fixture(autouse=True)
@@ -161,7 +161,7 @@ def _mk_home(root, name, rt):
 
 
 def test_runtime_migration_covers_both_tenants_dry_run_then_apply(tmp_path):
-    import migrate_runtime_deepseek as M
+    from scripts import migrate_runtime_deepseek as M
     a = _mk_home(tmp_path, "gzt-bot", {"model": "gpt-6.1-sol", "effort": "high"})
     b = _mk_home(tmp_path, "sample-user-bot", {"model": "claude-sonnet-5"})
     c = _mk_home(tmp_path, "ds-bot", {"model": "deepseek-v4-pro"})
@@ -189,7 +189,7 @@ def test_runtime_migration_covers_both_tenants_dry_run_then_apply(tmp_path):
 
 
 def test_runtime_migration_remote_only_when_home_not_on_this_machine(tmp_path):
-    import migrate_runtime_deepseek as M
+    from scripts import migrate_runtime_deepseek as M
     here = _mk_home(tmp_path, "tcp-bot", {"model": "gpt-6.1-sol"})
     lan = {"localhost", "127.0.0.1", "::1", "192.0.2.16"}
     # 没 addr → 本机
@@ -206,7 +206,7 @@ def test_runtime_migration_remote_only_when_home_not_on_this_machine(tmp_path):
 
 
 def test_runtime_migration_applies_to_local_addr_bots_and_counts_in_summary(tmp_path, capsys, monkeypatch):
-    import migrate_runtime_deepseek as M
+    from scripts import migrate_runtime_deepseek as M
     monkeypatch.setattr(M, "_local_hosts", lambda: {"localhost", "127.0.0.1"})
     a = _mk_home(tmp_path, "win-local", {"model": "gpt-6.1-sol"})
     b = _mk_home(tmp_path, "win-local2", {"model": "claude-opus-5"})

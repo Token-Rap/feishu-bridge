@@ -9,7 +9,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 _argv = sys.argv
 sys.argv = [_argv[0], tempfile.mkdtemp(prefix="bridge-test-home-")]
 try:
-    import fleet_bridge as b
+    from feishu_bridge import fleet_bridge as b
 finally:
     sys.argv = _argv
 
@@ -56,7 +56,7 @@ def test_doubao_failure_no_longer_falls_back(monkeypatch):
 def test_faster_whisper_is_not_imported_anymore():
     """回落删干净了没有 —— 留着 import 的话它会在运行时才炸 (包已从 requirements 移除)。"""
     src = Path(__file__).resolve().parent.parent.joinpath(
-        "fleet_bridge.py").read_text(encoding="utf-8")
+        "src/feishu_bridge/fleet_bridge.py").read_text(encoding="utf-8")
     assert "faster_whisper" not in src, "还有 faster_whisper 的引用没拆干净"
     assert "WhisperModel" not in src, "还有 WhisperModel 的引用没拆干净"
 

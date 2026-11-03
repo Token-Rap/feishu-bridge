@@ -12,8 +12,8 @@ import re
 import stat
 import time
 
-import codex_questions as q
-import question_defaults_producer as producer
+from feishu_bridge import codex_questions as q
+from feishu_bridge import question_defaults_producer as producer
 
 VERSION = 1
 AUTHOR = 'local-owner'

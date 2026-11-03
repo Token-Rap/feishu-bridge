@@ -12,9 +12,9 @@ import json
 import types
 import uuid
 
-import fleet_managed_diagnostic as diagnostic
-import fleet_managed_ingress as ingress
-import fleet_target_control as coordinator
+from feishu_bridge import fleet_managed_diagnostic as diagnostic
+from feishu_bridge import fleet_managed_ingress as ingress
+from feishu_bridge import fleet_target_control as coordinator
 
 _FRONTS = {}
 _CONNECTIONS = {}
@@ -101,7 +101,7 @@ class State:
 
 
 def _dispatch(b):
-    from fleet_managed_runtime import CURRENT
+    from feishu_bridge.fleet_managed_runtime import CURRENT
     require(_FRONTS.get((id(b.entry), id(b.dispatch.action))) is b
             and diagnostic._ENTRIES.get((id(b.entry), id(b.dispatch.action))) == (b.entry, b.dispatch)
             and CURRENT.get() is b.dispatch.action and b.entry.runtime is b.dispatch.runtime)
@@ -119,9 +119,9 @@ def _front(b):
 
 def remember_frontend(entry):
     """Actual Entry._execute only, before the initial frontend callback."""
-    from fleet_managed_entry import Entry
-    from fleet_managed_runtime import CURRENT
-    from app_frontend import AppFrontend
+    from feishu_bridge.fleet_managed_entry import Entry
+    from feishu_bridge.fleet_managed_runtime import CURRENT
+    from feishu_bridge.app_frontend import AppFrontend
     require(type(entry) is Entry)
     pair = diagnostic._ENTRIES.get((id(entry), id(CURRENT.get())))
     require(pair is not None and pair[0] is entry)
@@ -145,7 +145,7 @@ def remember_frontend(entry):
 
 def remember_connection(frontend, reader, writer):
     """Actual _on_conn metadata seam; this record grants no writer authority."""
-    from fleet_managed_entry import Entry
+    from feishu_bridge.fleet_managed_entry import Entry
     handler = frontend._managed_ingress
     if handler is None:
         return
@@ -213,7 +213,7 @@ def _live(o):
 
 def begin(frontend, event, entry):
     """Real AppFrontend.broadcast branch for Entry.inject's original user event."""
-    from fleet_managed_runtime import CURRENT
+    from feishu_bridge.fleet_managed_runtime import CURRENT
     b = _FRONTS.get((id(entry), id(CURRENT.get())))
     require(b is not None and b.entry is entry and b.frontend is frontend)
     key = (id(entry), id(b.dispatch.action))

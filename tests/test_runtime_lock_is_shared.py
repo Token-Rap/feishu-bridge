@@ -32,7 +32,7 @@ _HOME = Path("/tmp/fleet-fake-home")
 
 def _bridge_lock_name() -> str:
     """按 bridge 源码里的写法算出锁文件名。"""
-    src = (_ROOT / "fleet_bridge.py").read_text(encoding="utf-8")
+    src = (_ROOT / "src/feishu_bridge/fleet_bridge.py").read_text(encoding="utf-8")
     m = re.search(r'_RUNTIME_FILE\s*=\s*_BRIDGE_HOME\s*/\s*"([^"]+)"', src)
     assert m, "找不到 _RUNTIME_FILE 的定义 —— 先修扫描, 别改断言"
     runtime_name = m.group(1)
@@ -42,7 +42,7 @@ def _bridge_lock_name() -> str:
 
 
 def _admin_lock_name() -> str:
-    src = (_ROOT / "fleet_admin.py").read_text(encoding="utf-8")
+    src = (_ROOT / "src/feishu_bridge/fleet_admin.py").read_text(encoding="utf-8")
     m = re.search(r'open\(home\s*/\s*"([^"]+)"\s*,\s*"w"\)', src)
     assert m, "找不到 admin 开锁那一行 —— 先修扫描, 别改断言"
     return m.group(1)
@@ -58,8 +58,8 @@ def test_both_sides_lock_the_same_filename():
 
 def test_both_sides_write_the_same_runtime_file():
     """锁对了但写错文件同样白搭 —— 一并钉住。"""
-    bs = (_ROOT / "fleet_bridge.py").read_text(encoding="utf-8")
-    as_ = (_ROOT / "fleet_admin.py").read_text(encoding="utf-8")
+    bs = (_ROOT / "src/feishu_bridge/fleet_bridge.py").read_text(encoding="utf-8")
+    as_ = (_ROOT / "src/feishu_bridge/fleet_admin.py").read_text(encoding="utf-8")
     b = re.search(r'_RUNTIME_FILE\s*=\s*_BRIDGE_HOME\s*/\s*"([^"]+)"', bs).group(1)
     hits = set(re.findall(r'home\s*/\s*"(runtime\.[a-z]+)"', as_))
     assert b in hits, f"bridge 写 {b}, 而 admin 那侧只见到 {sorted(hits)}"

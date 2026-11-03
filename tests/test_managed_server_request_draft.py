@@ -11,11 +11,11 @@ DRAFT = Path(__file__).resolve().parents[1]
 PARENT = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(DRAFT), str(PARENT / 'tests'), str(PARENT)]
 
-import codex_approvals
-import fleet_managed_child as child
-import fleet_managed_ingress as ingress
-import fleet_target_control as control
-import fleet_managed_persistence  # Pin draft dependency before parent fixture path insertion.
+from feishu_bridge import codex_approvals
+from feishu_bridge import fleet_managed_child as child
+from feishu_bridge import fleet_managed_ingress as ingress
+from feishu_bridge import fleet_target_control as control
+from feishu_bridge import fleet_managed_persistence  # Pin draft dependency before parent fixture path insertion.
 import test_codex_questions as questions_fixture
 import test_managed_native_notification_source as original
 from test_managed_entry_source import bound, deliver
@@ -42,7 +42,7 @@ def actual_turn(b, monkeypatch, events):
     monkeypatch.setattr(questions_fixture, 'ROOT', DRAFT)
     proc, launches, output, logs, registrations = original.turn_fixture(b, monkeypatch, events)
     ns = inspect.getclosurevars(b.e._turn).nonlocals['ns']
-    assert ns['_run_turn_codex'].__code__.co_filename == str(DRAFT / 'fleet_bridge.py')
+    assert ns['_run_turn_codex'].__code__.co_filename == str(DRAFT / 'src/feishu_bridge/fleet_bridge.py')
     tasks = []
     spawn = codex_approvals.Approvals._spawn
     def observe(owner, coro):

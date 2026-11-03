@@ -15,9 +15,9 @@ from pathlib import Path
 import re
 import uuid
 
-import fleet_codex_storage as storage_module
-import fleet_managed_ingress as ingress
-import fleet_managed_runtime as runtime_module
+from feishu_bridge import fleet_codex_storage as storage_module
+from feishu_bridge import fleet_managed_ingress as ingress
+from feishu_bridge import fleet_managed_runtime as runtime_module
 
 
 MAX_STDERR = 1024 * 1024
@@ -159,7 +159,7 @@ class NativeChild:
         self._turn_binding = self._terminal = None
 
     def _live(self):
-        from fleet_managed_diagnostic import validate_native
+        from feishu_bridge.fleet_managed_diagnostic import validate_native
         validate_native(self)
         require(self.runtime.action() is self.action,
                 "managed_native_action_drift")
@@ -169,10 +169,10 @@ class NativeChild:
         self.entry.binding()
 
     def _hold(self):
-        from fleet_managed_persistence import hold_native_original
+        from feishu_bridge.fleet_managed_persistence import hold_native_original
         if hold_native_original(self):
             return  # Pending helper's immutable original; never foreign fallback.
-        from fleet_managed_diagnostic import hold_native
+        from feishu_bridge.fleet_managed_diagnostic import hold_native
         hold_native(self)  # Unissued or unknown originals never select a mutable fallback.
 
     def _stdio_live(self, proc, *, writing=False, closing=False):

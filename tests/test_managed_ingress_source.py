@@ -5,8 +5,8 @@ from pathlib import Path
 
 import pytest
 
-from fleet_managed_ingress import Refused, Selection, gateway_message
-from app_frontend import AppFrontend
+from feishu_bridge.fleet_managed_ingress import Refused, Selection, gateway_message
+from feishu_bridge.app_frontend import AppFrontend
 
 
 def frame(**changes):
@@ -135,9 +135,9 @@ def test_explicit_client_identity_is_retained_without_normalization():
 def test_selected_bridge_startup_refuses_before_legacy_native_or_filesystem(tmp_path):
     import ast
     from pathlib import Path
-    import fleet_managed_bootstrap
+    from feishu_bridge import fleet_managed_bootstrap
     from types import SimpleNamespace
-    source = Path(__file__).parents[1] / "fleet_bridge.py"
+    source = Path(__file__).parents[1] / "src/feishu_bridge/fleet_bridge.py"
     tree = ast.parse(source.read_text())
     guard = next(n for n in tree.body if isinstance(n, ast.Expr)
         and isinstance(n.value, ast.Call) and getattr(n.value.func, "id", "") == "_managed_startup_binding")
@@ -150,7 +150,7 @@ def test_selected_bridge_startup_refuses_before_legacy_native_or_filesystem(tmp_
     guard_index = tree.body.index(guard)
     for n in tree.body[:guard_index]:
         if isinstance(n, ast.ImportFrom):
-            assert n.module in {"__future__", "fleet_managed_bootstrap"}
+            assert n.module in {"__future__", "feishu_bridge.fleet_managed_bootstrap"}
         elif isinstance(n, ast.Import):
             assert all(a.name in {"os", "sys"} for a in n.names)
     fleet_managed_bootstrap.require_startup_binding({}, [str(source)])

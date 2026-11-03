@@ -11,7 +11,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 _argv = sys.argv
 sys.argv = [_argv[0], tempfile.mkdtemp(prefix="bridge-note-test-")]
 try:
-    from fleet_bridge import _build_bridge_note  # noqa: E402
+    from feishu_bridge.fleet_bridge import _build_bridge_note  # noqa: E402
 finally:
     sys.argv = _argv
 
@@ -95,7 +95,7 @@ def test_no_task_card_no_instructions(tmp_path):
 def test_command_carries_no_backslashes_and_no_guessed_interpreter():
     """Use the active interpreter and paths compatible with shell invocation."""
     import sys as _sys
-    from fleet_bridge import _TASK_CARD_CMD  # noqa: PLC0415
+    from feishu_bridge.fleet_bridge import _TASK_CARD_CMD  # noqa: PLC0415
     assert _TASK_CARD_CMD, "本机上这个命令该是有的 (task_card.py 就在仓根)"
     assert "\\" not in _TASK_CARD_CMD, f"命令里有反斜杠, Git Bash 会吞掉: {_TASK_CARD_CMD}"
     assert not _TASK_CARD_CMD.startswith("python3 "), "别用名字猜解释器"
@@ -303,7 +303,7 @@ def test_no_state_file_no_line():
 
 def test_windows_path_is_picked_by_existence_not_by_platform(tmp_path, monkeypatch):
     """Resolve the available configuration file without a platform branch."""
-    import fleet_bridge as B
+    from feishu_bridge import fleet_bridge as B
     home = tmp_path / "h"
     (home / ".fleet-ops").mkdir(parents=True)
     monkeypatch.setattr(B.Path, "home", staticmethod(lambda: home))
@@ -316,7 +316,7 @@ def test_no_platform_branch_in_the_fallback():
     """不许出现平台判断 —— `Path("C:/fleet/…")` 在 Mac 上自然 is_file() 为假。"""
     import inspect
 
-    import fleet_bridge as B
+    from feishu_bridge import fleet_bridge as B
     src = inspect.getsource(B._fleet_ops_file)
     assert "C:/fleet/" in src
     assert "platform" not in src and "os.name" not in src
@@ -324,7 +324,7 @@ def test_no_platform_branch_in_the_fallback():
 
 def test_every_fleet_ops_data_file_goes_through_the_fallback():
     """Behavioral regression coverage."""
-    src = (Path(__file__).resolve().parent.parent / "fleet_bridge.py").read_text(encoding="utf-8")
+    src = (Path(__file__).resolve().parent.parent / "src/feishu_bridge/fleet_bridge.py").read_text(encoding="utf-8")
     for name in ("fleet.json", "fleet_domains.json", "fleet_state.md", "fleet_api.md"):
         assert f'_fleet_ops_file("{name}")' in src, f"{name} 没走两路回落"
         # 且不许再有绕过它的直连写法
@@ -421,7 +421,7 @@ def test_points_somewhere_else_to_write():
 
 def test_oversize_note_carries_the_real_numbers():
     """Behavioral regression coverage."""
-    import fleet_bridge as fb
+    from feishu_bridge import fleet_bridge as fb
     s = fb._claude_md_cost_note(34227)
     assert "33KB" in s and "11409" in s, s
 
@@ -429,12 +429,12 @@ def test_oversize_note_carries_the_real_numbers():
 def test_no_note_when_within_limit():
     """**只在超限时出现。** 每轮都出现的提示会被当背景音 —— 而一个具体的
     "你每轮多花 11409 tokens" 不是背景音。"""
-    import fleet_bridge as fb
+    from feishu_bridge import fleet_bridge as fb
     assert fb._claude_md_cost_note(6061) == ""
     assert fb._claude_md_cost_note(12 * 1024) == ""
 
 
 def test_limit_is_a_parameter_not_a_magic_number():
     """上限可调 —— 12KB 是当下的判断, 不是物理常数。"""
-    import fleet_bridge as fb
+    from feishu_bridge import fleet_bridge as fb
     assert fb._claude_md_cost_note(9000, limit=8 * 1024) != ""

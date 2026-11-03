@@ -10,7 +10,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-import fleet_providers
+from feishu_bridge import fleet_providers
 
 
 def test_codex_bin_rejects_a_configured_but_missing_binary(monkeypatch):
@@ -39,7 +39,7 @@ def test_bridge_does_not_reimplement_the_lookup():
 
     判据是**结构**而不是行为 —— 行为一致可以靠巧合, 而"只有一处算法"不会。
     """
-    src = (Path(__file__).resolve().parents[1] / "fleet_bridge.py").read_text(encoding="utf-8")
+    src = (Path(__file__).resolve().parents[1] / "src/feishu_bridge/fleet_bridge.py").read_text(encoding="utf-8")
     code = "\n".join(l.split("#")[0] for l in src.split("\n"))   # 剥行注释, 免得数到说明文字
     assert 'os.getenv("CODEX_BIN"' not in code, (
         "fleet_bridge.py 又自己读了一遍 CODEX_BIN —— 判据只许留在 fleet_providers.codex_bin(), "

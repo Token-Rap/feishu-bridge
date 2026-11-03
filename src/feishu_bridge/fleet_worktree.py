@@ -227,7 +227,7 @@ def main_tree_denial(tool: str, tool_input: dict, cwd: str | Path) -> str | None
         if p.name in MAIN_TREE_EDITABLE:
             return None
         return (f"⛔ {rel} 在 {name} 的**主树**里 —— 主树就是线上代码, 不直接改 (契约 contracts/task_worktree.md)。\n"
-                f"先: cd ~ && {sys.executable} {Path(__file__).resolve()} start {name} <task> --bot <你的名字>\n"
+                f"先: cd ~ && {sys.executable} -m feishu_bridge.fleet_worktree start {name} <task> --bot <你的名字>\n"
                 f"再改它打印的 <worktree>/{rel}; 跑命令一律 `cd <worktree> && …`。\n"
                 f"例外只有 {' / '.join(sorted(MAIN_TREE_EDITABLE))} (改完当轮提交)。")
     return None

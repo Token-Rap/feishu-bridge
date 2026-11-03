@@ -2,7 +2,7 @@
 import tempfile
 from pathlib import Path
 
-import fleet_watchdog as W
+from feishu_bridge import fleet_watchdog as W
 
 
 def _seen(line_body: str) -> bool:

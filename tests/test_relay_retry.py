@@ -19,7 +19,7 @@ from pathlib import Path
 # 默认取本仓 (tests/ 的上级); 远程节点用 FLEET_BRIDGE_DIR 指到它自己的 bridge 目录
 BRIDGE_DIR = os.environ.get("FLEET_BRIDGE_DIR") or str(Path(__file__).resolve().parents[1])
 sys.path.insert(0, BRIDGE_DIR)
-from app_frontend import AppFrontend  # noqa: E402
+from feishu_bridge.app_frontend import AppFrontend  # noqa: E402
 
 
 

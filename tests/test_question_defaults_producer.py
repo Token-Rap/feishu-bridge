@@ -3,10 +3,10 @@ import ast,copy,json
 from pathlib import Path
 from types import SimpleNamespace
 import pytest
-import codex_questions as q
-import question_defaults_producer as p
-import question_defaults_source as draft
-import fleet_codex_storage as storage
+from feishu_bridge import codex_questions as q
+from feishu_bridge import question_defaults_producer as p
+from feishu_bridge import question_defaults_source as draft
+from feishu_bridge import fleet_codex_storage as storage
 from codex_storage_fixture import storage_fixture, question_storage, header
 
 
@@ -29,7 +29,7 @@ def setup():
         '_BOT_NAME':'backend','CODEX_PROCS':{'work':process},
         'CODEX_TURNS':{'work':SimpleNamespace(proc=process,thread_id='thread',turn_id='turn')},
         'APP_FRONT':SimpleNamespace(resolve_work_display_ex=lambda want:(current['routes'].get(want),want,''))}
-    src=ast.parse((Path(__file__).parents[1]/'fleet_bridge.py').read_text())
+    src=ast.parse((Path(__file__).parents[1]/'src/feishu_bridge/fleet_bridge.py').read_text())
     fn=next(n for n in src.body if isinstance(n,ast.FunctionDef) and n.name=='_question_valid')
     exec(compile(ast.Module([fn],type_ignores=[]),'ACTUAL_SOURCE_VALID_GUARD','exec'),ns)
     owner=object();adapter=p.BridgeOwnedQuestionProducer(reg,owner=owner,bot='backend',valid=ns['_question_valid'])

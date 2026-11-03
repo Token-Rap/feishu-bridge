@@ -12,9 +12,9 @@ from datetime import datetime, timezone, timedelta
 
 import pytest
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-import app_frontend as af
-import peer_reports as pr
-import codex_questions as q
+from feishu_bridge import app_frontend as af
+from feishu_bridge import peer_reports as pr
+from feishu_bridge import codex_questions as q
 from test_codex_questions import source_namespace, make_card, answer
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -48,7 +48,7 @@ def compile_functions(path, names, ns):
 
 def harness(monkeypatch, tmp_path, normal=False):
     ns, events, logs, _ = source_namespace(monkeypatch)
-    compile_functions(BASE / "fleet_bridge.py", {"handle_message", "_app_inject", "_defer_peer_report",
+    compile_functions(BASE / "src/feishu_bridge/fleet_bridge.py", {"handle_message", "_app_inject", "_defer_peer_report",
         "_drain_peer_reports", "_question_expiry_loop", "_stamp", "_route_marker", "_queued_parts"}, ns)
     fleet, domains = config(tmp_path)
     ns.update(PEER_REPORTS=pr.Journal(tmp_path / "peer_reports.json"), _PEER_DRAINS=set(), _PEER_TASKS=set(),
@@ -80,10 +80,10 @@ def harness(monkeypatch, tmp_path, normal=False):
     front._inject = ns["_app_inject"]
     front._inject_ack = lambda *a: None
     front._spawn = lambda coro: af.AppFrontend._spawn(front, coro)
-    obj = next(n for n in ast.parse((BASE / "app_frontend.py").read_text()).body if isinstance(n, ast.ClassDef) and n.name == "AppFrontend")
+    obj = next(n for n in ast.parse((BASE / "src/feishu_bridge/app_frontend.py").read_text()).body if isinstance(n, ast.ClassDef) and n.name == "AppFrontend")
     method = copy.deepcopy(next(n for n in obj.body if isinstance(n, ast.AsyncFunctionDef) and n.name == "_handle_frame"))
     scope = vars(af).copy()
-    exec(compile(ast.fix_missing_locations(ast.Module(body=[method], type_ignores=[])), str(BASE / "app_frontend.py"), "exec"), scope)
+    exec(compile(ast.fix_missing_locations(ast.Module(body=[method], type_ignores=[])), str(BASE / "src/feishu_bridge/app_frontend.py"), "exec"), scope)
     async def submit(frame, gateway=False):
         writer = object()
         if gateway: front._gateway_writers.add(writer)
@@ -377,7 +377,7 @@ async def current_decision_drain_fixture(monkeypatch, tmp_path, *, fresh_work="w
     """Real frontend/registry/drain/ordinary run_turn; memory-only provider sink."""
     from test_codex_questions import completed
     ns, reg, old_card, clock, calls, submit, logs, _ = harness(monkeypatch, tmp_path)
-    compile_functions(BASE / "fleet_bridge.py", {"run_turn"}, ns)
+    compile_functions(BASE / "src/feishu_bridge/fleet_bridge.py", {"run_turn"}, ns)
     fresh = {}
     if fresh_work != "work":
         ns["_load_session"].__self__[fresh_work + "::codex"] = "thread"

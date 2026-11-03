@@ -6,7 +6,7 @@ This does not exclude ordinary cloud/model-catalog startup or attest readiness.
 """
 from pathlib import Path
 
-from fleet_managed_ingress import Refused, Selection
+from feishu_bridge.fleet_managed_ingress import Refused, Selection
 
 
 def selected(environ):

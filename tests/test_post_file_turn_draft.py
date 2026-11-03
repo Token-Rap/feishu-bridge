@@ -4,15 +4,15 @@ import os
 
 import pytest
 import test_codex_questions as question_fixture
-import codex_archived_resume as archived
+from feishu_bridge import codex_archived_resume as archived
 import test_managed_file_io_draft as old
 import test_file_refusal_runtime_draft as prior
 from test_managed_child_source import native
 from test_managed_entry_source import bound, deliver
-import fleet_managed_persistence as persistence
-import fleet_managed_file_io as file_io
-import fleet_target_control as control
-import fleet_managed_ingress as ingress
+from feishu_bridge import fleet_managed_persistence as persistence
+from feishu_bridge import fleet_managed_file_io as file_io
+from feishu_bridge import fleet_target_control as control
+from feishu_bridge import fleet_managed_ingress as ingress
 
 
 @pytest.fixture(autouse=True)

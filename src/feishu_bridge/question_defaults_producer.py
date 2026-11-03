@@ -6,8 +6,8 @@ handler imports this module. Capability is a proposed local owner interface only
 """
 import json
 from dataclasses import dataclass
-import codex_questions as q
-import question_defaults_source as draft
+from feishu_bridge import codex_questions as q
+from feishu_bridge import question_defaults_source as draft
 
 CAPABILITY = 'bridge-owner-original-ui-defaults-v1-SOURCE'
 BINDING_FIELDS = ('work', 'display', 'thread', 'turn', 'runtime', 'protocol', 'connection')

@@ -3,9 +3,9 @@ import ast, copy, json
 from pathlib import Path
 from types import SimpleNamespace
 import pytest
-import codex_questions as q
-import question_defaults_intents as intents
-import question_defaults_producer as producer
+from feishu_bridge import codex_questions as q
+from feishu_bridge import question_defaults_intents as intents
+from feishu_bridge import question_defaults_producer as producer
 import test_question_defaults_producer as base
 from test_question_defaults_producer import current_storage, storage_fixture
 
@@ -29,7 +29,7 @@ def harness(tmp_path, values):
     h.inbox=intents.OwnerIntentInbox(tmp_path/intents.DIRECTORY,bot='backend',audit=h.audit.append,wall=lambda:h.wall[0])
     h.event={'method':'item/completed','params':{'threadId':'thread','turnId':'turn',
              'item':{'type':'agentMessage','id':'SYNTHETIC-item','questions':copy.deepcopy(values)}}}
-    fn=next(n for n in ast.parse((Path(__file__).parents[1]/'fleet_bridge.py').read_text()).body
+    fn=next(n for n in ast.parse((Path(__file__).parents[1]/'src/feishu_bridge/fleet_bridge.py').read_text()).body
             if isinstance(n,ast.FunctionDef) and n.name=='_observe_question_event')
     ns={'_QUESTION_DEFAULT_INTENTS':h.inbox,'_QUESTION_DEFAULT_PRODUCER':h.adapter,
         '_QUESTION_DEFAULT_OWNER':h.owner,'CODEX_QUESTIONS':h.reg}

@@ -9,12 +9,12 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 _argv = sys.argv
 sys.argv = [_argv[0], tempfile.mkdtemp(prefix="bridge-group-")]
 try:
-    import app_frontend as AF
+    from feishu_bridge import app_frontend as AF
     # ⚠ **fleet_bridge 也在这儿导入**, 不在函数里 `import`:
     # 函数里导入时 argv 是 pytest 的, 家目录解析会跑偏 ⇒ 这几条**单独跑红、全量跑绿**
     # (全量时别的测试模块已经用正确 argv 导入过了)。
     # **顺序依赖的绿比红更麻烦** —— 它只在有人单独跑这个文件时才现形。
-    import fleet_bridge as FB
+    from feishu_bridge import fleet_bridge as FB
 finally:
     sys.argv = _argv
 

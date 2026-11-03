@@ -8,10 +8,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 # bridge 在 import 期读 sys.argv[1] 当 HOME, 必须先接管 (同 test_app_frontend)
 _argv = sys.argv
 sys.argv = [_argv[0], tempfile.mkdtemp(prefix="bridge-test-home-")]
-import fleet_bridge  # noqa: E402
+from feishu_bridge import fleet_bridge  # noqa: E402
 sys.argv = _argv
 
-_SRC = (Path(__file__).resolve().parents[1] / "fleet_bridge.py").read_text(encoding="utf-8")
+_SRC = (Path(__file__).resolve().parents[1] / "src/feishu_bridge/fleet_bridge.py").read_text(encoding="utf-8")
 _CODE = "\n".join(l.split("#")[0] for l in _SRC.split("\n"))   # 剥行注释, 免得数到说明文字
 
 

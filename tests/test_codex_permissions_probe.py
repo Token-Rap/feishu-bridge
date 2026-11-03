@@ -5,7 +5,7 @@ import json
 
 import pytest
 
-import codex_approvals as ca
+from feishu_bridge import codex_approvals as ca
 from test_codex_approvals import bridge, answer
 
 
@@ -36,7 +36,7 @@ def run_adapter(monkeypatch, tmp_path, *, thread_change=None, pages=None, probe=
     from codex_storage_fixture import make_storage, original_protocol
     fixture=make_storage(monkeypatch,tmp_path)
     monkeypatch.setattr(b._fs,"SESSIONS_FILE",fixture.scope.home.parent/"sessions.json")
-    from app_frontend import AppFrontend, DISPLAY_CHAT
+    from feishu_bridge.app_frontend import AppFrontend, DISPLAY_CHAT
     async def run():
         reader = asyncio.StreamReader()
         written, emitted, saved, status, ledger = [], [], [], [], []

@@ -7,7 +7,7 @@ _TARGETS = {"fleet_bridge.py": "_FEISHU_RETRY_MAX", "app_frontend.py": "_UPLOAD_
 
 
 def _code(name: str) -> str:
-    src = (_ROOT / name).read_text(encoding="utf-8")
+    src = (_ROOT / "src/feishu_bridge" / name).read_text(encoding="utf-8")
     return "\n".join(l.split("#")[0] for l in src.split("\n"))   # 剥注释, 免得数到说明
 
 

@@ -6,8 +6,8 @@ from pathlib import Path
 import os
 import pytest
 
-import fleet_managed_ingress as ingress
-import fleet_target_control as control
+from feishu_bridge import fleet_managed_ingress as ingress
+from feishu_bridge import fleet_target_control as control
 from test_managed_child_source import native
 from test_managed_entry_source import bound, deliver
 import test_managed_native_notification_source as previous
@@ -20,7 +20,7 @@ def actual_helpers(b, monkeypatch):
     original = previous.source_namespace
     def namespace(*args):
         ns, events, logs, sessions = original(*args)
-        tree = ast.parse((Path(__file__).parents[1] / 'fleet_bridge.py').read_bytes())
+        tree = ast.parse((Path(__file__).parents[1] / 'src/feishu_bridge/fleet_bridge.py').read_bytes())
         names = {'_write_codex_status', '_append_codex_ledger'}
         nodes = [x for x in tree.body if isinstance(x, ast.FunctionDef) and x.name in names]
         ns.update(datetime=datetime, timezone=timezone, DEFAULT_MODEL='synthetic-default',
@@ -47,7 +47,7 @@ def assert_unknown(b, proc, calls, logs, result):
 def test_actual_status_failure_is_not_swallowed_or_followed_by_ledger(native, monkeypatch):
     b = native; del b.children
     proc, calls, events, logs, registrations, ns = actual_helpers(b, monkeypatch)
-    import fleet_managed_file_io as file_io
+    from feishu_bridge import fleet_managed_file_io as file_io
     original = os.write
     writes = []
     def fail(fd, value):
@@ -144,7 +144,7 @@ def test_actual_replace_followed_by_callback_uncertainty_is_not_a_positive_tail(
     proc, calls, events, logs, registrations, ns = actual_helpers(b, monkeypatch)
     def callback(*_):
         if fault == 'action_drift':
-            import fleet_managed_runtime as runtime
+            from feishu_bridge import fleet_managed_runtime as runtime
             runtime.CURRENT.set(None)
         elif fault == 'broadcast_interrupt': raise KeyboardInterrupt(PRIVATE)
         else: raise OSError(PRIVATE)

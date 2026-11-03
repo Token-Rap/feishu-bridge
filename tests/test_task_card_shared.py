@@ -6,9 +6,9 @@ from pathlib import Path
 
 import pytest
 
-import task_card
+from feishu_bridge import task_card
 
-SCRIPT = str(Path(__file__).resolve().parent.parent / "task_card.py")
+SCRIPT = str(Path(__file__).resolve().parent.parent / "src/feishu_bridge/task_card.py")
 
 
 @pytest.fixture
@@ -89,13 +89,13 @@ def test_merged_order_is_stable():
 
 def test_bridge_shares_the_same_merge_function():
     """别在桥里另写一份合并 —— 两份迟早漂开, 而漂开的表现是「我说 done 5, 划掉的是第 6 条」。"""
-    src = (Path(__file__).resolve().parent.parent / "fleet_bridge.py").read_text(encoding="utf-8")
+    src = (Path(__file__).resolve().parent.parent / "src/feishu_bridge/fleet_bridge.py").read_text(encoding="utf-8")
     assert "task_card.merged(" in src, "桥没用共用的 merged()"
 
 
 def test_bridge_pushes_the_card_to_every_live_chat():
     """⚠ 原来写死 `APP_FRONT.chat_id` ⇒ 群聊里从来没有过任务卡。"""
-    src = (Path(__file__).resolve().parent.parent / "fleet_bridge.py").read_text(encoding="utf-8")
+    src = (Path(__file__).resolve().parent.parent / "src/feishu_bridge/fleet_bridge.py").read_text(encoding="utf-8")
     i = src.index("def _push_task_card()")
     body = src[i:i + 700]
     assert "_card_chats()" in body, "没按「所有活着的会话」播"

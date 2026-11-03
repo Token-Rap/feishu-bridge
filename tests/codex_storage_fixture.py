@@ -6,8 +6,8 @@ import hashlib,json,os,tempfile
 from pathlib import Path
 from types import SimpleNamespace
 import pytest
-import fleet_codex_storage as storage
-import fleet_sessions
+from feishu_bridge import fleet_codex_storage as storage
+from feishu_bridge import fleet_sessions
 
 
 def make_storage(monkeypatch, base=None):

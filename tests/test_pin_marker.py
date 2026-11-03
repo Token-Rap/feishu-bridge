@@ -11,7 +11,7 @@ _argv = sys.argv
 _HOME = tempfile.mkdtemp(prefix="bridge-test-home-")
 sys.argv = [_argv[0], _HOME]
 try:
-    import fleet_bridge as b
+    from feishu_bridge import fleet_bridge as b
 finally:
     sys.argv = _argv
 

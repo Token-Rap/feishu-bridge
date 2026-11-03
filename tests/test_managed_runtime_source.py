@@ -3,10 +3,10 @@ import json
 
 import pytest
 
-import fleet_sessions as sessions
-import fleet_managed_ingress as ingress
-import fleet_managed_runtime as runtime
-import fleet_target_control as control
+from feishu_bridge import fleet_sessions as sessions
+from feishu_bridge import fleet_managed_ingress as ingress
+from feishu_bridge import fleet_managed_runtime as runtime
+from feishu_bridge import fleet_target_control as control
 
 
 @pytest.fixture

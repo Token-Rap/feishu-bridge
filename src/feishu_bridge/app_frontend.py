@@ -115,7 +115,7 @@ from urllib.parse import parse_qs, urlparse
 from pathlib import Path
 from urllib.error import HTTPError
 from typing import Any, Awaitable, Callable
-from fleet_env import env as _env   # 新名 FLEET_BRIDGE_* 优先, 回落旧名
+from feishu_bridge.fleet_env import env as _env   # 新名 FLEET_BRIDGE_* 优先, 回落旧名
 
 # 中转给网关时按后缀声明的 content-type。网关 /upload 靠它认扩展名 —— 认不出来就 415。
 # 与网关 main.py 的 _CT_EXT 是同一张表的反向 (那边 content-type → 后缀)。
@@ -343,7 +343,7 @@ class AppFrontend:
 
     def _greet(self, writer: asyncio.StreamWriter) -> None:
         """应答 hello 并补发待处理事件和运行默认值。写入失败应留日志。"""
-        from fleet_managed_output import before_greet
+        from feishu_bridge.fleet_managed_output import before_greet
         before_greet(self, writer)
         out = []
         if self._pending:
@@ -573,7 +573,7 @@ class AppFrontend:
     async def _on_conn(self, reader: asyncio.StreamReader, writer: asyncio.StreamWriter) -> None:
         gateway_hello = False
         if self._managed_ingress is not None:
-            from fleet_managed_output import remember_connection
+            from feishu_bridge.fleet_managed_output import remember_connection
             remember_connection(self, reader, writer)
         self._writers.add(writer)
         self._log(f"🌐 网关已连接 (当前 {len(self._writers)} 个)")
@@ -596,7 +596,7 @@ class AppFrontend:
         except Exception:  # noqa: BLE001  (网关掉线等, 静默清理)
             pass
         finally:
-            from fleet_managed_output import before_disconnect, close_connection
+            from feishu_bridge.fleet_managed_output import before_disconnect, close_connection
             original_connection = before_disconnect(self, writer)
             self._writers.discard(writer)
             self._gateway_writers.discard(writer)
@@ -657,7 +657,7 @@ class AppFrontend:
         # 有 DeepSeek key 才报 —— 网关据此决定 /api/models 里放不放 deepseek-*,
         # 以及 set_model 要不要当场拒。每次现查 (只看 env/文件非空, 不读内容)。
         try:
-            import fleet_providers
+            from feishu_bridge import fleet_providers
             if fleet_providers.deepseek_configured():
                 caps.append("deepseek")
         except Exception:  # noqa: BLE001  (查不到 = 不报, 网关 fail-closed)
@@ -867,7 +867,7 @@ class AppFrontend:
     def broadcast(self, ev: dict[str, Any], *, _managed_entry=None) -> None:
         """把事件推给所有网关连接。可从任意线程调; 网关不在则按需暂存待补发。"""
         if _managed_entry is not None:
-            from fleet_managed_output import begin
+            from feishu_bridge.fleet_managed_output import begin
             return begin(self, ev, _managed_entry)
         ev = self._with_chat(ev)
         if not self._writers or self._loop is None:
@@ -883,7 +883,7 @@ class AppFrontend:
 
     def _write_all(self, line: bytes, _managed_tail=None) -> None:
         if _managed_tail is not None:
-            from fleet_managed_output import callback
+            from feishu_bridge.fleet_managed_output import callback
             return callback(self, line, _managed_tail)
         for w in list(self._writers):
             try:

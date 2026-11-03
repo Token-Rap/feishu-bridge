@@ -10,10 +10,10 @@ import pytest
 import test_managed_file_io_draft as old
 from test_managed_entry_source import bound, deliver
 from test_managed_child_source import native
-import fleet_managed_persistence as persistence
-import fleet_managed_file_io as file_io
-import fleet_managed_ingress as ingress
-import fleet_target_control as control
+from feishu_bridge import fleet_managed_persistence as persistence
+from feishu_bridge import fleet_managed_file_io as file_io
+from feishu_bridge import fleet_managed_ingress as ingress
+from feishu_bridge import fleet_target_control as control
 
 
 @pytest.fixture(autouse=True)

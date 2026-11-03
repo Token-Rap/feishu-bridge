@@ -16,11 +16,11 @@ DRAFT = Path(__file__).parents[1]
 sys.path[:0] = [str(DRAFT), str(PARENT/'tests'), str(PARENT)]
 
 import pytest
-import fleet_managed_file_io as file_io
-import fleet_managed_persistence as draft_persistence
-assert Path(draft_persistence.__file__).resolve() == DRAFT/'fleet_managed_persistence.py'
-import fleet_managed_ingress as ingress
-import fleet_target_control as control
+from feishu_bridge import fleet_managed_file_io as file_io
+from feishu_bridge import fleet_managed_persistence as draft_persistence
+assert Path(draft_persistence.__file__).resolve() == DRAFT/'src/feishu_bridge/fleet_managed_persistence.py'
+from feishu_bridge import fleet_managed_ingress as ingress
+from feishu_bridge import fleet_target_control as control
 from test_managed_child_source import native
 from test_managed_entry_source import bound, deliver
 import test_managed_native_notification_source as previous
@@ -47,13 +47,13 @@ def private_descriptor_cleanup():
 
 
 def actual_helpers(b, monkeypatch):
-    assert Path(draft_persistence.__file__).resolve() == DRAFT/'fleet_managed_persistence.py'
-    assert Path(file_io.__file__).resolve() == DRAFT/'fleet_managed_file_io.py'
+    assert Path(draft_persistence.__file__).resolve() == DRAFT/'src/feishu_bridge/fleet_managed_persistence.py'
+    assert Path(file_io.__file__).resolve() == DRAFT/'src/feishu_bridge/fleet_managed_file_io.py'
     original = previous.source_namespace
     captured = {}
     def namespace(*args):
         ns, events, logs, sessions = original(*args)
-        tree = ast.parse((DRAFT/'fleet_bridge.py').read_bytes())
+        tree = ast.parse((DRAFT/'src/feishu_bridge/fleet_bridge.py').read_bytes())
         nodes = [n for n in tree.body if isinstance(n,ast.FunctionDef)
                  and n.name in {'_write_codex_status','_append_codex_ledger'}]
         ns.update(datetime=datetime,timezone=timezone,DEFAULT_MODEL='synthetic-default',
@@ -222,7 +222,7 @@ def test_original_action_path_or_owner_drift_after_possible_write_retains_origin
         if p.name=='status.tmp' and not seen:
             o=file_io._ORIGINALS[id(p.session)];seen.append(o)
             if fault=='action':
-                import fleet_managed_runtime as runtime
+                from feishu_bridge import fleet_managed_runtime as runtime
                 runtime.CURRENT.set(None)
             elif fault=='original_path':o.observation.original=replace(o.helper_original,path=o.home/'synthetic-foreign')
             else:o.observation.files=object()
@@ -293,9 +293,9 @@ def test_unbound_raw_values_or_constructor_cannot_select_file_io(native,monkeypa
 
 
 def test_private_module_identity_precedes_inherited_fixture_path_mutation():
-    assert sys.modules['fleet_managed_persistence'] is draft_persistence
-    assert Path(draft_persistence.__file__).resolve()==DRAFT/'fleet_managed_persistence.py'
-    assert Path(file_io.__file__).resolve()==DRAFT/'fleet_managed_file_io.py'
+    assert sys.modules['feishu_bridge.fleet_managed_persistence'] is draft_persistence
+    assert Path(draft_persistence.__file__).resolve()==DRAFT/'src/feishu_bridge/fleet_managed_persistence.py'
+    assert Path(file_io.__file__).resolve()==DRAFT/'src/feishu_bridge/fleet_managed_file_io.py'
 
 
 @pytest.mark.parametrize('replacement',[None,object.__new__(file_io.Files)])

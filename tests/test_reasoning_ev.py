@@ -18,7 +18,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 _argv = sys.argv
 sys.argv = [_argv[0], tempfile.mkdtemp(prefix="bridge-test-home-")]
 try:
-    import fleet_bridge as b
+    from feishu_bridge import fleet_bridge as b
 finally:
     sys.argv = _argv
 

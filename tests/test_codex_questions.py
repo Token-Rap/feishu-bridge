@@ -17,10 +17,10 @@ from types import SimpleNamespace
 
 import pytest
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-import codex_questions as q
-import codex_approvals
-import codex_archived_resume
-import app_frontend
+from feishu_bridge import codex_questions as q
+from feishu_bridge import codex_approvals
+from feishu_bridge import codex_archived_resume
+from feishu_bridge import app_frontend
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -152,7 +152,7 @@ def test_normal_finish_expected_shutdown_only_and_conflict():
 
 def source_namespace(monkeypatch):
     """Compile selected real production definitions without importing application/SDK."""
-    source = ast.parse((ROOT / "fleet_bridge.py").read_text())
+    source = ast.parse((ROOT / "src/feishu_bridge/fleet_bridge.py").read_text())
     names = {"_observe_question_event", "_question_runtime_binding", "_question_valid", "_question_origin", "_question_dispatch_guard", "_question_live_dispatch_guard",
              "_dispatch_question_answer", "_app_answer_codex_question", "_question_task_done", "_app_answer_ask", "_run_turn_codex",
              "_CodexActiveTurn", "_CodexRpcError", "_codex_unusable_session", "_codex_resume_guard", "_codex_rpc_send", "_codex_rpc_response", "_session_chat_key", "_busy_guard", "run_turn",
@@ -161,13 +161,13 @@ def source_namespace(monkeypatch):
     # Bind real dependencies locally for the existing AST-extracted consumers.
     # Receipt root is separate; it must not overwrite the storage child Scope.
     import tempfile
-    import codex_archived_resume
+    from feishu_bridge import codex_archived_resume
     archive_temp = tempfile.TemporaryDirectory(prefix="SYNTHETIC-archive-fixture-")
     archive_root = Path(archive_temp.name).resolve()
     archive_root.chmod(0o700)
     events, logs, sessions = [], [], {"work::codex": "thread"}
     from codex_storage_fixture import question_storage
-    import fleet_codex_storage as storage
+    from feishu_bridge import fleet_codex_storage as storage
     fixture = question_storage(monkeypatch, sessions)
     front = SimpleNamespace(chat_id="work", broadcast=events.append,
         resolve_work_display_ex=lambda d: ("work", d, ""),
@@ -215,7 +215,7 @@ def source_namespace(monkeypatch):
                        or (isinstance(n,ast.Assign) and any(isinstance(t,ast.Name)
                            and t.id in {"_REPLY_DELIVERY_NOTE", "_CODEX_QUESTION_NOTE"}
                            for t in n.targets))], type_ignores=[])
-    exec(compile(ast.fix_missing_locations(tree),str(ROOT/"fleet_bridge.py"),"exec"), ns)
+    exec(compile(ast.fix_missing_locations(tree),str(ROOT/"src/feishu_bridge/fleet_bridge.py"),"exec"), ns)
     monkeypatch.setattr(q, "selected_protocol", lambda _:q.PROTOCOL)
     return ns, events, logs, sessions
 
@@ -235,7 +235,7 @@ class SyntheticProcess:
         method=msg.get("method")
         if method=="initialize": self.put({"id":1,"result":{}})
         if method=="config/read":
-            import fleet_codex_storage as storage
+            from feishu_bridge import fleet_codex_storage as storage
             scope=storage.select()
             self.put({"id":msg["id"],"result":{"config":dict(sqlite_home=str(scope.home),forced_login_method="chatgpt",cli_auth_credentials_store="file",model_provider="openai",shell_environment_policy={"set":{**{k:str(scope.home) for k in storage._RESERVED},storage.DESKTOP_KEY:str(scope.desktop_home)}})}})
         if method in {"thread/resume","thread/start"}: self.put({"id":2,"result":{"thread":{"id":self.thread}}})
@@ -420,7 +420,7 @@ def test_actual_steer_ack_requires_exact_selected_turn_response(monkeypatch, ack
 
 
 def test_frontend_reserved_namespace_never_generic_fallback():
-    module=ast.parse((ROOT/"app_frontend.py").read_text())
+    module=ast.parse((ROOT/"src/feishu_bridge/app_frontend.py").read_text())
     cls=next(n for n in module.body if isinstance(n,ast.ClassDef) and n.name=="AppFrontend")
     method=next(n for n in cls.body if isinstance(n,ast.AsyncFunctionDef) and n.name=="_handle_frame")
     ns={};exec(compile(ast.fix_missing_locations(ast.Module(body=[ast.ImportFrom(module="__future__",names=[ast.alias(name="annotations")],level=0),method],type_ignores=[])),"app_frontend.py","exec"),ns)
@@ -543,7 +543,7 @@ def test_never_security_handlers_receive_typed_requests_separately(monkeypatch,m
 
 
 def test_frontend_gateway_disconnect_public_cleanup(monkeypatch):
-    module=ast.parse((ROOT/'app_frontend.py').read_text())
+    module=ast.parse((ROOT/'src/feishu_bridge/app_frontend.py').read_text())
     cls=next(n for n in module.body if isinstance(n,ast.ClassDef) and n.name=='AppFrontend')
     defs=[copy.deepcopy(n) for n in cls.body if isinstance(n,ast.AsyncFunctionDef) and n.name in {'_on_conn','_handle_frame'}]
     ns={'asyncio':asyncio,'json':json}

@@ -8,7 +8,7 @@ import tempfile
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from app_frontend import AppFrontend  # noqa: E402
+from feishu_bridge.app_frontend import AppFrontend  # noqa: E402
 
 
 class _Writer:

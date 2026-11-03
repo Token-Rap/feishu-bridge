@@ -9,7 +9,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 _argv = sys.argv
 sys.argv = [_argv[0], tempfile.mkdtemp(prefix="bridge-gev-")]
 try:
-    import app_frontend as AF
+    from feishu_bridge import app_frontend as AF
 finally:
     sys.argv = _argv
 

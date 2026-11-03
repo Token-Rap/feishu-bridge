@@ -3,7 +3,7 @@ import copy
 import importlib.util
 from pathlib import Path
 
-spec = importlib.util.spec_from_file_location('question_defaults_source', Path(__file__).parents[1] / 'question_defaults_source.py')
+spec = importlib.util.spec_from_file_location('question_defaults_source', Path(__file__).parents[1] / 'src/feishu_bridge/question_defaults_source.py')
 M = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(M)
 
@@ -78,8 +78,8 @@ def test_malformed_ambiguous_or_oversized_original_is_refused():
 def test_old_title_options_parser_and_live_production_imports_remain_unchanged():
     root = Path(__file__).parents[1]
     for name in ('fleet_bridge.py', 'app_frontend.py', 'codex_questions.py'):
-        assert 'question_defaults_source' not in (root / name).read_text()
-    assert 'set(q) - {"title", "options"}' in (root / 'codex_questions.py').read_text()
+        assert 'question_defaults_source' not in (root / "src/feishu_bridge" / name).read_text()
+    assert 'set(q) - {"title", "options"}' in (root / 'src/feishu_bridge/codex_questions.py').read_text()
 
 
 def test_basis_bool_numeric_substitution_reproduced_then_refused():

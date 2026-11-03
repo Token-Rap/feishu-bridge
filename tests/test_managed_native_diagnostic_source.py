@@ -1,9 +1,9 @@
 """Original pre-file diagnostic authority; actual selected turn, fake child only."""
 import asyncio
 import pytest
-import fleet_managed_child as child
-import fleet_managed_ingress as ingress
-import fleet_target_control as control
+from feishu_bridge import fleet_managed_child as child
+from feishu_bridge import fleet_managed_ingress as ingress
+from feishu_bridge import fleet_target_control as control
 from test_managed_entry_source import bound, deliver
 from test_managed_child_source import native
 import test_managed_server_request_draft as server
@@ -97,8 +97,8 @@ def test_actual_pre_file_pointer_drift_kept_through_unwind_and_matching_foreign_
 
 @pytest.mark.parametrize('fault',['physical_control','scope','request','epoch','io'])
 def test_original_qualification_or_io_failure_retains_unknown_without_foreign_fallback_or_retry(native,monkeypatch,tmp_path,fault):
-    import fleet_managed_diagnostic as diagnostic
-    import fleet_managed_runtime as runtime
+    from feishu_bridge import fleet_managed_diagnostic as diagnostic
+    from feishu_bridge import fleet_managed_runtime as runtime
     b = native; original_control = b.r.control
     foreign,before,raw,hooks = foreign_target(tmp_path,monkeypatch)
     proc,launches,output,logs,registrations,ns,tasks = server.actual_turn(b,monkeypatch,[])
@@ -157,8 +157,8 @@ def test_original_qualification_or_io_failure_retains_unknown_without_foreign_fa
 
 
 def test_archived_pre_file_handler_and_finally_use_original_dispatch(native,monkeypatch,tmp_path):
-    import codex_archived_resume as archived
-    import fleet_managed_persistence as persistence
+    from feishu_bridge import codex_archived_resume as archived
+    from feishu_bridge import fleet_managed_persistence as persistence
     b=native;original_control=b.r.control
     foreign,before,raw,hooks=foreign_target(tmp_path,monkeypatch)
     proc,launches,output,logs,registrations,ns,tasks=server.actual_turn(b,monkeypatch,[])
@@ -185,7 +185,7 @@ def test_archived_pre_file_handler_and_finally_use_original_dispatch(native,monk
 
 
 def test_original_dispatch_diagnostic_is_not_replayed_after_current_unwinds(native,monkeypatch,tmp_path):
-    import fleet_managed_diagnostic as diagnostic
+    from feishu_bridge import fleet_managed_diagnostic as diagnostic
     test_actual_pre_file_control_drift_cannot_diagnose_foreign_store(native,monkeypatch,tmp_path,'write')
     b=native;owner=b.e._native_owners[b.frame['work_id']]
     original=diagnostic._NATIVES[id(owner)].dispatch
@@ -196,7 +196,7 @@ def test_original_dispatch_diagnostic_is_not_replayed_after_current_unwinds(nati
 
 
 def test_unregistered_native_or_constructed_original_has_no_diagnostic_authority(native,monkeypatch,tmp_path):
-    import fleet_managed_diagnostic as diagnostic
+    from feishu_bridge import fleet_managed_diagnostic as diagnostic
     b=native;foreign,before,raw,hooks=foreign_target(tmp_path,monkeypatch)
     raw_native=object.__new__(child.NativeChild);raw_native.runtime=foreign.r
     raw_native.entry=b.e;raw_native.action=object()

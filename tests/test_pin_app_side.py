@@ -9,7 +9,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 _argv = sys.argv
 sys.argv = [_argv[0], tempfile.mkdtemp(prefix="pin-app-test-")]
 try:
-    import fleet_bridge as fb  # noqa: E402
+    from feishu_bridge import fleet_bridge as fb  # noqa: E402
 finally:
     sys.argv = _argv
 

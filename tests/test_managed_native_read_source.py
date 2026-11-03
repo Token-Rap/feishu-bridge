@@ -5,13 +5,13 @@ import ast
 import json
 from pathlib import Path
 import pytest
-import fleet_managed_child as child
-import fleet_managed_ingress as ingress
+from feishu_bridge import fleet_managed_child as child
+from feishu_bridge import fleet_managed_ingress as ingress
 from test_managed_entry_source import bound, deliver
 from test_managed_child_source import native, Process, fake_spawn
 from test_managed_native_write_source import source_namespace, Sink
-import fleet_managed_runtime as runtime
-import fleet_managed_codex as managed_codex
+from feishu_bridge import fleet_managed_runtime as runtime
+from feishu_bridge import fleet_managed_codex as managed_codex
 
 
 class Lines:
@@ -266,7 +266,7 @@ def test_actual_selected_turn_reads_startup_and_live_frames_through_original_own
 
 
 def test_actual_selected_startup_and_stream_use_one_owned_reader():
-    tree = ast.parse((Path(__file__).parents[1] / 'fleet_bridge.py').read_text())
+    tree = ast.parse((Path(__file__).parents[1] / 'src/feishu_bridge/fleet_bridge.py').read_text())
     node = next(n for n in tree.body if isinstance(n, ast.AsyncFunctionDef) and n.name == '_run_turn_codex')
     wrapper = next(n for n in ast.walk(node) if isinstance(n, ast.AsyncFunctionDef) and n.name == 'native_response')
     assert 'reader=managed_native' in ast.unparse(wrapper)

@@ -1,6 +1,6 @@
 'Tests for the cross-platform Codex capability gate.'
-import app_frontend as AF
-import fleet_bridge as FB
+from feishu_bridge import app_frontend as AF
+from feishu_bridge import fleet_bridge as FB
 
 
 def test_windows_defaults_to_disabled():

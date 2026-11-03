@@ -19,7 +19,7 @@ import re
 import stat
 import subprocess
 import tomllib
-import fleet_managed_codex as _managed_codex
+from feishu_bridge import fleet_managed_codex as _managed_codex
 
 KEY = "FLEET_CODEX_STORAGE_HOME"
 MARKER = "fleet-storage.json"

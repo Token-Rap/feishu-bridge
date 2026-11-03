@@ -8,7 +8,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-import app_frontend
+from feishu_bridge import app_frontend
 
 
 def test_omits_optional_keys_when_absent():

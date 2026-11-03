@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pytest
 
-_SCRIPT = Path(__file__).resolve().parent.parent / "task_card.py"
+_SCRIPT = Path(__file__).resolve().parent.parent / "src/feishu_bridge/task_card.py"
 CHAT = "oc_abc123"
 SID = "sid-99999999"
 

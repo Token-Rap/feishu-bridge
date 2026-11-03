@@ -9,7 +9,7 @@ from pathlib import Path
 import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-import codex_approvals as ca
+from feishu_bridge import codex_approvals as ca
 
 
 def request(rid=10, **params):
@@ -256,7 +256,7 @@ def bridge():
     argv = sys.argv
     sys.argv = [argv[0], tempfile.mkdtemp(prefix="bridge-approval-test-")]
     try:
-        import fleet_bridge
+        from feishu_bridge import fleet_bridge
         return fleet_bridge
     finally:
         sys.argv = argv
@@ -298,7 +298,7 @@ def test_interrupt_revokes_card_before_terminating_process(monkeypatch):
 
 
 def test_stale_reserved_answer_never_becomes_chat(tmp_path):
-    from app_frontend import AppFrontend
+    from feishu_bridge.app_frontend import AppFrontend
     async def run():
         f = AppFrontend(tmp_path, log=lambda _: None)
         def unwanted(*_):
@@ -319,7 +319,7 @@ def test_full_adapter_approval_roundtrip_does_not_block_stdout(monkeypatch, tmp_
     mapping=fixture.scope.home.parent/"sessions.json"
     mapping.write_text(json.dumps({"work-chat::codex":{"active":"thread","sessions":{"thread":{"fleet_codex_namespace":{"home":str(fixture.scope.home),"namespace":fixture.scope.namespace}}}}}) if resume else '{}')
     monkeypatch.setattr(b._fs,"SESSIONS_FILE",mapping)
-    from app_frontend import AppFrontend, DISPLAY_CHAT
+    from feishu_bridge.app_frontend import AppFrontend, DISPLAY_CHAT
     async def run():
         reader = asyncio.StreamReader()
         emitted, written, replies = [], [], []

@@ -15,10 +15,15 @@
 set -uo pipefail
 
 # venv 仍复用 quant-trader bot home 下那套 (含 lark_oapi/claude_agent_sdk);
-# 代码位置参数化 (FEISHU_BRIDGE_CODE), 默认 = 本独立 repo 所在目录 (本脚本所在目录),
-# 不再硬编码 quant-trader. 想换 venv 设 FEISHU_BRIDGE_VENV.
+# 默认运行已安装的包。FEISHU_BRIDGE_CODE 可指定兼容的 Python 入口文件；
+# 想换 venv 设 FEISHU_BRIDGE_VENV.
 VENV="${FEISHU_BRIDGE_VENV:-$HOME/.fleet-claude-bridge/venv/bin/python}"
-SCRIPT="${FEISHU_BRIDGE_CODE:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/fleet_bridge.py}"
+ENTRY="${FEISHU_BRIDGE_CODE:-feishu_bridge.fleet_bridge}"
+if [ -n "${FEISHU_BRIDGE_CODE:-}" ]; then
+  launch_args=("$ENTRY")
+else
+  launch_args=(-m "$ENTRY")
+fi
 
 cmd="${1:-}"; home="${2:-}"
 if [ -z "$cmd" ] || [ -z "$home" ]; then
@@ -27,7 +32,7 @@ fi
 home="${home/#\~/$HOME}"   # 展开 ~
 home="${home%/}"           # 去尾斜杠
 logf="$home/bridge.log"
-pat="fleet_bridge.py $home"   # ps 匹配该实例 (home 作 argv)
+pat="${ENTRY} $home"   # ps 匹配该实例 (home 作 argv)
 
 _pids() { pgrep -f "$pat" 2>/dev/null || true; }
 
@@ -35,7 +40,7 @@ case "$cmd" in
   start)
     if [ -n "$(_pids)" ]; then echo "已在跑: $(_pids)"; exit 0; fi
     mkdir -p "$home"; : > "$logf"
-    nohup "$VENV" -u "$SCRIPT" "$home" > "$logf" 2>&1 &
+    nohup "$VENV" -u "${launch_args[@]}" "$home" > "$logf" 2>&1 &
     sleep 4
     if [ -n "$(_pids)" ]; then echo "✅ 启动 PID $(_pids)"; grep -m1 "bridge 启动" "$logf" 2>/dev/null
     else echo "❌ 启动失败:"; tail -5 "$logf" 2>/dev/null; exit 1; fi

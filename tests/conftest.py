@@ -16,5 +16,5 @@ os.environ["FLEET_DEEPSEEK_KEY_FILE"] = "/nonexistent/fleet-tests/deepseek_api_k
 @pytest.fixture
 def claude_default(monkeypatch):
     """Pin Claude for tests of its SDK and Claude-to-Codex transitions."""
-    import fleet_bridge
+    from feishu_bridge import fleet_bridge
     monkeypatch.setattr(fleet_bridge, "DEFAULT_MODEL", "claude-opus-5")

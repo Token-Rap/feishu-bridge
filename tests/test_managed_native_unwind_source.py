@@ -5,10 +5,10 @@ from types import SimpleNamespace
 
 import pytest
 
-import codex_archived_resume as archived
-import fleet_managed_child as child
-import fleet_managed_ingress as ingress
-import fleet_target_control as control
+from feishu_bridge import codex_archived_resume as archived
+from feishu_bridge import fleet_managed_child as child
+from feishu_bridge import fleet_managed_ingress as ingress
+from feishu_bridge import fleet_target_control as control
 from test_managed_child_source import native
 from test_managed_entry_source import bound, deliver
 import test_managed_native_notification_source as previous
