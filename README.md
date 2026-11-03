@@ -30,6 +30,8 @@ FEISHU_BRIDGE_VENV="$PWD/.venv/bin/python" ./scripts/fleet_ctl.sh start ~/.fleet
 
 命令中的 `example` 是占位符，请替换为实例名称。`fleet_ctl.sh` 是手动管理方式；不要与自动拉起同一实例的进程管理器同时使用。
 
+最小多实例与 Router/Worker 协作示例见 [fleet-manager-min](examples/fleet-manager-min/README.md)。
+
 ## 代码与测试
 
 业务模块位于 `src/feishu_bridge/`，以 `feishu_bridge.*` 导入；`scripts/` 存放运维脚本，`tests/` 存放测试，`probes/` 存放独立诊断探针。安装后可用 `.venv/bin/python -m feishu_bridge.bridge.fleet_bridge <home>` 启动网关，或用 `.venv/bin/python -m feishu_bridge.watchdog.fleet_watchdog` 启动 watchdog。迁移工具使用 `.venv/bin/python scripts/migrate_runtime_deepseek.py`。

@@ -1,0 +1,5 @@
+{
+  "fleet-manager": {"home": "~/.feishu-example-manager", "repo": "~/fleet-manager-work", "self": true},
+  "jobhunt": {"home": "~/.feishu-example-jobhunt", "repo": "~/jobhunt-work"},
+  "backend": {"home": "~/.feishu-example-backend", "repo": "~/backend-work"}
+}
