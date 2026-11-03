@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="feishu-bridge：飞书多实例 Agent 网关，把飞书消息接到 Claude Code / Codex。">
+  <meta name="theme-color" content="#10151b">
+  <title>feishu-bridge — 飞书多实例 Agent 网关</title>
+  <style>
+    :root{color-scheme:dark;--bg:#10151b;--panel:#192129;--line:#34434a;--text:#eff6f3;--muted:#a9bbb7;--accent:#9cf1ca;--blue:#a7c7ff}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.65}a{color:inherit}a:focus-visible{outline:3px solid var(--accent);outline-offset:4px}.wrap{width:min(1100px,calc(100% - 40px));margin:auto}header{border-bottom:1px solid var(--line)}nav{min-height:76px;display:flex;align-items:center;justify-content:space-between;gap:20px}.brand{font-weight:750;letter-spacing:-.04em;text-decoration:none;font-size:1.15rem}.brand span{color:var(--accent)}.nav-link{font-size:.9rem;color:var(--muted);text-decoration:none}.hero{padding:100px 0 90px;display:grid;grid-template-columns:1.2fr .8fr;gap:60px;align-items:center}.eyebrow{color:var(--accent);font-size:.8rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase}.hero h1{font-size:clamp(2.8rem,7vw,5.6rem);letter-spacing:-.065em;line-height:1.02;margin:18px 0 24px}.pitch{font-size:clamp(1.2rem,2.4vw,1.65rem);line-height:1.5;max-width:700px;margin:0}.subtitle{color:var(--muted);margin:14px 0 30px}.actions{display:flex;gap:12px;flex-wrap:wrap}.button{display:inline-block;padding:12px 20px;border:1px solid var(--line);border-radius:8px;text-decoration:none;font-weight:700}.button.primary{background:var(--accent);border-color:var(--accent);color:#10241c}.button:hover{border-color:var(--accent)}.hero-card{border:1px solid var(--line);border-radius:16px;padding:24px;background:linear-gradient(145deg,#202f31,#192129)}.hero-card .label{color:var(--muted);font-size:.8rem;letter-spacing:.1em;text-transform:uppercase}.flow{display:flex;flex-direction:column;gap:10px;margin-top:20px}.flow div{padding:14px 16px;border:1px solid var(--line);border-radius:8px;background:#111a1e}.flow .arrow{padding:0;border:0;background:none;color:var(--accent);text-align:center;line-height:1}.flow strong{display:block}.flow small{color:var(--muted)}section{padding:80px 0;border-top:1px solid var(--line)}.section-head{display:flex;justify-content:space-between;gap:20px;align-items:end;margin-bottom:30px}.section-head h2{font-size:clamp(2rem,4vw,3rem);letter-spacing:-.05em;line-height:1.15;margin:8px 0}.section-head p{color:var(--muted);max-width:420px;margin:0}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:24px;min-height:170px}.card .number{color:var(--accent);font-size:.8rem}.card h3{margin:20px 0 8px;font-size:1.08rem}.card p,.role p{color:var(--muted);font-size:.95rem;margin:0}.roles{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.role{border:1px solid var(--line);border-radius:12px;padding:22px;background:var(--panel)}.role .role-name{color:var(--blue);font-size:.8rem;text-transform:uppercase;letter-spacing:.1em;font-weight:700}.role h3{margin:8px 0}.note{margin-top:20px;padding:18px 20px;border-left:3px solid var(--accent);background:#1b2926;color:#c8d9d2;font-size:.94rem}.example-link{display:inline-block;color:var(--accent);margin-top:24px;text-underline-offset:4px}footer{border-top:1px solid var(--line);padding:28px 0;color:var(--muted);font-size:.85rem}footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}@media(max-width:760px){.hero{grid-template-columns:1fr;gap:40px;padding:65px 0}.grid{grid-template-columns:repeat(2,1fr)}.section-head{display:block}.section-head p{margin-top:16px}section{padding:60px 0}}@media(max-width:480px){.grid,.roles{grid-template-columns:1fr}.card{min-height:0}.hero h1{overflow-wrap:anywhere}.nav-link{font-size:.82rem}}
+  </style>
+</head>
+<body>
+  <header><nav class="wrap" aria-label="主导航"><a class="brand" href="#top"><span>✳</span> feishu-bridge</a><a class="nav-link" href="https://github.com/Token-Rap/feishu-bridge">GitHub ↗</a></nav></header>
+  <main id="top">
+    <div class="wrap hero">
+      <div><div class="eyebrow">Open source · Agent gateway</div><h1>feishu-<br>bridge<span style="color:var(--accent)">.</span></h1><p class="pitch">飞书多实例 Agent 网关，把飞书消息接到 Claude Code / Codex</p><p class="subtitle">Connect Feishu messages to your local agents.</p><div class="actions"><a class="button primary" href="https://github.com/Token-Rap/feishu-bridge">查看 GitHub ↗</a><a class="button" href="https://github.com/Token-Rap/feishu-bridge/tree/main/examples/fleet-manager-min">探索示例 ↗</a></div></div>
+      <div class="hero-card" aria-label="消息流示意"><div class="label">Message flow / 消息流</div><div class="flow"><div><strong>飞书消息</strong><small>Feishu events</small></div><div class="arrow" aria-hidden="true">↓</div><div><strong>feishu-bridge</strong><small>独立实例 · 会话 · 流式卡片</small></div><div class="arrow" aria-hidden="true">↓</div><div><strong>Claude Code / Codex</strong><small>本地 agent</small></div></div></div>
+    </div>
+    <section><div class="wrap"><div class="section-head"><div><div class="eyebrow">Capabilities</div><h2>让每个实例各司其职。</h2></div><p>共享代码，分开运行状态；从飞书发起交互，接续已有工作。</p></div><div class="grid">
+      <article class="card"><span class="number">01 / ISOLATION</span><h3>多实例 home</h3><p>每个 bot 拥有独立的配置、运行状态和绑定工作目录。</p></article>
+      <article class="card"><span class="number">02 / CONTEXT</span><h3>会话续接</h3><p>持久化会话信息，支持续接与会话管理。</p></article>
+      <article class="card"><span class="number">03 / STREAMING</span><h3>流式卡片</h3><p>通过飞书消息与流式卡片返回 agent 的输出。</p></article>
+      <article class="card"><span class="number">04 / OPERATIONS</span><h3>fleet_admin / fleet_ctl</h3><p>查看和管理实例配置，或手动控制实例进程。</p></article>
+      <article class="card"><span class="number">05 / HEALTH</span><h3>watchdog</h3><p>检查心跳和卡住的回合；恢复能力依赖相应配置。</p></article>
+    </div></div></section>
+    <section><div class="wrap"><div class="section-head"><div><div class="eyebrow">Architecture / Role mapping</div><h2>从角色理解协作。</h2></div><p>借鉴 DeepSeek Super-agent 的角色与控制回路，对照本项目的实例和入口。</p></div><div class="roles">
+      <article class="role"><span class="role-name">Router</span><h3>fleet-manager / fleet_admin</h3><p>fleet-manager 负责协调与分派约定；fleet_admin 管理实例及配置。</p></article>
+      <article class="role"><span class="role-name">Workers</span><h3>领域 bot</h3><p>各领域 bot 在自己的 home、会话和工作目录中执行任务。</p></article>
+      <article class="role"><span class="role-name">Trigger</span><h3>飞书消息与事件</h3><p>消息和群事件提供交互入口，具体处理取决于配置和代码。</p></article>
+      <article class="role"><span class="role-name">Watchdog</span><h3>fleet_watchdog</h3><p>外部控制回路检查健康状态；恢复依赖 macOS launchd 服务。</p></article>
+    </div><div class="note">角色是工作约定：公开示例中任务和结果由人转交，并不提供开箱即用的跨 bot 自动分派或结果回传。</div><a class="example-link" href="https://github.com/Token-Rap/feishu-bridge/blob/main/examples/fleet-manager-min/README.md">阅读 fleet-manager-min 示例与能力边界 →</a></div></section>
+  </main>
+  <footer><div class="wrap"><span>feishu-bridge · 飞书与本地 agent 之间的桥梁</span><a href="https://github.com/Token-Rap/feishu-bridge">GitHub ↗</a></div></footer>
+</body>
+</html>

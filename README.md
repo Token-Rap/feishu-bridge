@@ -1,5 +1,7 @@
 # feishu-bridge
 
+网站 / Website: https://token-rap.github.io/feishu-bridge/
+
 飞书与 Claude Code、Codex 之间的多实例网关。通过飞书自建应用的 WebSocket 长连接接收消息，将任务交给对应的本地 agent，并以飞书消息和流式卡片返回结果。
 
 ## 功能
