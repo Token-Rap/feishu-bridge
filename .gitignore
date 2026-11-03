@@ -12,6 +12,7 @@ runtime/
 status/
 sessions/
 !src/feishu_bridge/sessions/
+!tests/sessions/
 # 运行态 IPC 文件 (实际在各 bot home, 不在本 repo; 兜底排除)
 runtime.json
 status.json

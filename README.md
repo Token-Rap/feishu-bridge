@@ -48,6 +48,24 @@ src/feishu_bridge/
 
 每个目录都是 Python 子包；例如使用 `from feishu_bridge.sessions import fleet_sessions` 导入会话模块。`fleet_managed_codex` 归入 managed，因为它服务于 managed 子进程的 Codex 运行时。
 
+测试按主责模块与上述源码子包对应：
+
+```text
+tests/
+├── conftest.py                 全局 fixture 与测试环境隔离
+├── codex_storage_fixture.py    跨模块共享存储 fixture
+├── bridge/                     对应 bridge/
+├── sessions/                   对应 sessions/
+├── admin/                      对应 admin/
+├── watchdog/                   对应 watchdog/
+├── managed/                    对应 managed/
+├── codex/                      对应 codex/ 及其适配器
+├── questions/                  对应 questions/
+└── common/                     跨模块的锁一致性与测试环境检查
+```
+
+跨模块测试按主责归类；`common/` 保存无法归属于单个子包的检查。
+
 ```bash
 .venv/bin/pip install pytest
 .venv/bin/python -m pytest -q
