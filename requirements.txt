@@ -1,0 +1,5 @@
+# feishu-claude-bridge 运行依赖 (装进各 bot home 的 venv, 如 ~/.fleet-claude-bridge/venv)
+lark-oapi          # 飞书自建应用 websocket 长连接 + IM API
+claude-agent-sdk   # Claude Code 引擎 (订阅认证, 不走 API key)
+qrcode             # fleet_app_provision 扫码建号
+python-dotenv      # 读 <home>/.env
