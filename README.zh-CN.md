@@ -1,5 +1,7 @@
 [English](README.md) | 中文
 
+![feishu-bridge](docs/cover.jpg)
+
 # feishu-bridge
 
 网站 / Website: https://token-rap.github.io/feishu-bridge/
